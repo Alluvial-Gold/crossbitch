@@ -4,6 +4,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { MaterialModule } from '../material.module';
 import { NgxsModule } from '@ngxs/store';
 import { ProjectState } from './state/project.state';
+import { SettingsState } from './state/settings.state';
 
 
 
@@ -14,7 +15,7 @@ import { ProjectState } from './state/project.state';
   imports: [
     CommonModule,
     MaterialModule,
-    NgxsModule.forFeature([ProjectState])
+    NgxsModule.forFeature([ProjectState, SettingsState])
   ],
   exports: [
     ToolbarComponent,

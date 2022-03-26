@@ -5,11 +5,11 @@ import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 
 @Component({
-  selector: 'app-keylist',
-  templateUrl: './keylist.component.html',
-  styleUrls: ['./keylist.component.scss']
+  selector: 'app-palette',
+  templateUrl: './palette.component.html',
+  styleUrls: ['./palette.component.scss']
 })
-export class KeylistComponent implements OnInit, OnDestroy {
+export class PaletteComponent implements OnInit, OnDestroy {
 
   sub: Subscription = new Subscription();
 

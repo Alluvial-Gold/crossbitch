@@ -9,6 +9,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
 
@@ -22,6 +23,7 @@ import { MatTableModule } from '@angular/material/table';
     MatTooltipModule,
     MatExpansionModule,
     MatTableModule,
+    MatButtonToggleModule,
   ],
   exports: [
     MatToolbarModule,
@@ -33,6 +35,7 @@ import { MatTableModule } from '@angular/material/table';
     MatTooltipModule,
     MatExpansionModule,
     MatTableModule,
+    MatButtonToggleModule,
   ]
 })
 export class MaterialModule { }

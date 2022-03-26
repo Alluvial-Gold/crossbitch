@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material.module';
 import { ToolboxComponent } from './toolbox/toolbox.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -11,7 +12,8 @@ import { ToolboxComponent } from './toolbox/toolbox.component';
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    FormsModule,
+    MaterialModule,
   ],
   exports: [
     ToolboxComponent,

@@ -1,20 +1,23 @@
 <div style="width: 400px">
 
-  
-  <mat-accordion>
+  <!-- Palette / keys -->
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Palette
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-palette></app-palette>
+  </mat-expansion-panel>
 
-    <!-- Palette / keys -->
-    <!-- expand by default? -->
-    <mat-expansion-panel [expanded]="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Keys / Palette
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <app-keylist></app-keylist>
-    </mat-expansion-panel>
-
-  </mat-accordion>
+  <!-- Layers -->
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Layers
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-layers></app-layers>
+  </mat-expansion-panel>
 
 </div>

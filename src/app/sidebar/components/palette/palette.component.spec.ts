@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KeylistComponent } from './keylist.component';
+import { PaletteComponent } from './palette.component';
 
-describe('KeylistComponent', () => {
-  let component: KeylistComponent;
-  let fixture: ComponentFixture<KeylistComponent>;
+describe('PaletteComponent', () => {
+  let component: PaletteComponent;
+  let fixture: ComponentFixture<PaletteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KeylistComponent ]
+      declarations: [ PaletteComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KeylistComponent);
+    fixture = TestBed.createComponent(PaletteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

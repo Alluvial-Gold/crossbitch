@@ -21,21 +21,14 @@ export class SquareLayer implements ILayer {
       }
       this.values.push(row);
     }
-
-    // TEST - simple pattern
-    this.values[3][3] = 0;
-    this.values[3][6] = 0;
-    this.values[7][3] = 0;
-    this.values[7][4] = 0;
-    this.values[7][5] = 0;
-    this.values[7][6] = 0;
-    this.values[6][2] = 0;
-    this.values[6][7] = 0;
   }
 
   // TODO - resize canvas
 
   drawLayer(ctx: CanvasRenderingContext2D, palette: PaletteEntry[]): void {
+    // clear initially...
+    //ctx.clearRect(0, 0, this.values[0].length * SQUARE_SIZE, this.values.length * SQUARE_SIZE);
+
     for (let rowIdx = 0; rowIdx < this.values.length; rowIdx++) {
       for (let colIdx = 0; colIdx < this.values[0].length; colIdx++) {
         let value = this.values[rowIdx][colIdx];

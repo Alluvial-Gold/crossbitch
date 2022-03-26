@@ -8,6 +8,7 @@ import { PatternSymbol } from "./pattern-symbol.model";
 import { SquareLayer } from "./square-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
+import { BackStitchLayer } from "./backstitch-layer.model";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
@@ -52,9 +53,10 @@ export class ProjectState {
       backgroundColour: 'white' 
     };
 
-    // Start with single SquareLayer
+    // Start with single SquareLayer & Backstitch layer
     let layer1 = new SquareLayer("Square1", action.rows, action.columns);
-    let layers = [layer1];
+    let layer2 = new BackStitchLayer("Backstitch1");
+    let layers = [layer1, layer2];
 
     // Start with black
     let blackFloss: Floss = {
@@ -80,6 +82,22 @@ export class ProjectState {
 
   }
 
+
+  @Action(Project.SelectLayer)
+  selectLayer(
+    ctx: StateContext<ProjectModel>,
+    action: Project.SelectLayer
+  ) {
+    let state = ctx.getState();
+    let newIdx = state.layers.findIndex((layer) => layer.name == action.layerName);
+    if (newIdx != -1) {
+      ctx.patchState({
+        currentLayerIndex: newIdx
+      });
+    }
+  }
+
+
   // Should this be here or somewhere else?
   @Action(Project.FillSquare)
   fillSquare(
@@ -91,7 +109,7 @@ export class ProjectState {
     let currentLayer = state.layers[state.currentLayerIndex];
 
     if (currentLayer instanceof SquareLayer) {
-      currentLayer.values[action.row][action.column] = 0; // TODO - bring in palette colour
+      currentLayer.values[action.row][action.column] = action.index;
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;

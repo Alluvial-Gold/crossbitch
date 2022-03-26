@@ -5,6 +5,8 @@ import { SQUARE_SIZE } from 'src/app/core/constants';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
+import { ToolboxMode } from 'src/app/core/state/settings.model';
+import { SettingsState } from 'src/app/core/state/settings.state';
 import { SquareLayer } from 'src/app/core/state/square-layer.model';
 
 const MIN_ZOOM = 0.1;
@@ -28,6 +30,10 @@ export class CanvasComponent implements OnInit, OnDestroy {
   @Select(ProjectState.getProject)
   project$!: Observable<ProjectModel>;
   project: ProjectModel | undefined;
+
+  @Select(SettingsState.getCurrentToolboxMode)
+  currentMode$!: Observable<ToolboxMode>;
+  currentMode: ToolboxMode | undefined;
 
   @ViewChild('mainCanvas', {static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -78,6 +84,12 @@ export class CanvasComponent implements OnInit, OnDestroy {
       this.project$.subscribe((project) => {
         this.project = project;
         this.redraw();
+      })
+    )
+
+    this.sub.add(
+      this.currentMode$.subscribe((currentMode) => {
+        this.currentMode = currentMode;
       })
     )
   }
@@ -157,7 +169,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   // colour in single square :)
-  private colourSquare(mouseX: number, mouseY: number) {
+  private colourSquare(mouseX: number, mouseY: number, remove: boolean = false) {
     if (!this.project) {
       return;
     }
@@ -172,8 +184,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
       let currentValue = currentLayer.values[squareValue.y][squareValue.x];
 
       // TODO update this - check if current square is already filled with current colour
-      if (currentValue != 0) {
-        this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x));
+      let index = remove ? -1 : 0; // TODO get from palette
+      if (currentValue != index) {
+        this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x, index));
       }
     }
   }
@@ -214,9 +227,11 @@ export class CanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: Event) {
     if (e instanceof MouseEvent && e.button == 0) {
       // Right mouse button to do things
-      // TODO - check which mode we're in
-      this.colourSquare(e.offsetX, e.offsetY);
-      this.isDrawDragging = true; // ???
+      if (this.currentMode == ToolboxMode.Fill || this.currentMode == ToolboxMode.Remove) {
+        this.colourSquare(e.offsetX, e.offsetY, this.currentMode == ToolboxMode.Remove);
+        this.isDrawDragging = true;
+      }
+
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
       this.isPanDragging = true;
@@ -225,19 +240,18 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   onMouseMove(e: Event) {
     if (this.isPanDragging && e instanceof MouseEvent) {
-        // Pan
-        let moveX = e.movementX;
-        let moveY = e.movementY;
-  
-        this.transformX += moveX;
-        this.transformY += moveY;
-  
-        this.applyTransform();
+      // Pan
+      let moveX = e.movementX;
+      let moveY = e.movementY;
+
+      this.transformX += moveX;
+      this.transformY += moveY;
+
+      this.applyTransform();
     } else if (this.isDrawDragging && e instanceof MouseEvent) {
-      console.log(e);
-        // Again check mode TODO
-        console.log(`${e.offsetX}, ${e.offsetY}`);
-        this.colourSquare(e.offsetX, e.offsetY);
+      if (this.currentMode == ToolboxMode.Fill || this.currentMode == ToolboxMode.Remove) {
+        this.colourSquare(e.offsetX, e.offsetY, this.currentMode == ToolboxMode.Remove);
+      }
     }
   }
 

@@ -8,10 +8,10 @@ import { CoreModule } from './core/core.module';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolboxModule } from './toolbox/toolbox.module';
-import { SidebarComponent } from './sidebar/components/sidebar/sidebar.component';
 import { SidebarModule } from './sidebar/sidebar.module';
 import { CanvasModule } from './canvas/canvas.module';
 import { NgxsModule } from '@ngxs/store';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,6 +23,7 @@ import { NgxsModule } from '@ngxs/store';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
+    FormsModule,
     NgxsModule.forRoot(),
 
     CoreModule,
