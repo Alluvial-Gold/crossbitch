@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
 
@@ -18,6 +20,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSidenavModule,
     MatListModule,
     MatTooltipModule,
+    MatExpansionModule,
+    MatTableModule,
   ],
   exports: [
     MatToolbarModule,
@@ -27,6 +31,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSidenavModule,
     MatListModule,
     MatTooltipModule,
+    MatExpansionModule,
+    MatTableModule,
   ]
 })
 export class MaterialModule { }

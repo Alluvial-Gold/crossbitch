@@ -8,6 +8,8 @@ import { CoreModule } from './core/core.module';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolboxModule } from './toolbox/toolbox.module';
+import { SidebarComponent } from './sidebar/sidebar/sidebar.component';
+import { SidebarModule } from './sidebar/sidebar.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import { ToolboxModule } from './toolbox/toolbox.module';
 
     CoreModule,
     ToolboxModule,
+    SidebarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
