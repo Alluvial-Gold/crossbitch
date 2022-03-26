@@ -1,0 +1,23 @@
+<table mat-table [dataSource]="palette" class="mat-elevation-z8">
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="symbol">
+    <th mat-header-cell *matHeaderCellDef> Symbol </th>
+    <td mat-cell *matCellDef="let element"> {{element.symbol.value}} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.floss.description}} </td>
+  </ng-container>
+
+  <!-- Colour Column -->
+  <ng-container matColumnDef="colour">
+    <th mat-header-cell *matHeaderCellDef> Colour </th>
+    <td mat-cell *matCellDef="let element"> {{element.floss.colour}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

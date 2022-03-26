@@ -10,12 +10,12 @@
 
     <!-- Layers/Key sidebar -->
     <mat-drawer #sidebarDrawer  mode="side" opened position="end">
-      <app-sidebar></app-sidebar>
+      <app-sidebar [project]="currentProject"></app-sidebar>
     </mat-drawer>
     
       <!-- canvas -->
     <mat-drawer-content>
-      <app-canvas></app-canvas>
+      <app-canvas [project]="currentProject"></app-canvas>
     </mat-drawer-content>
 
 

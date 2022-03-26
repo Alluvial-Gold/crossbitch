@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { KeylistComponent } from './keylist/keylist.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { KeylistComponent } from './components/keylist/keylist.component';
 import { MaterialModule } from '../material.module';
+import { CoreModule } from '../core/core.module';
 
 
 
@@ -14,6 +15,7 @@ import { MaterialModule } from '../material.module';
   imports: [
     CommonModule,
     MaterialModule,
+    CoreModule,
   ],
   exports: [
     SidebarComponent,

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { PaletteEntry } from 'src/app/core/models/palette-entry.model';
 
 export interface PeriodicElement {
   name: string;
@@ -27,8 +28,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class KeylistComponent implements OnInit {
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = [ 'symbol', 'name', 'colour'];
+
+  @Input() palette: PaletteEntry[] = [];
 
   constructor() { }
 
