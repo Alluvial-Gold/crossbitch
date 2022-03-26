@@ -10,6 +10,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolboxModule } from './toolbox/toolbox.module';
 import { SidebarComponent } from './sidebar/sidebar/sidebar.component';
 import { SidebarModule } from './sidebar/sidebar.module';
+import { CanvasModule } from './canvas/canvas.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SidebarModule } from './sidebar/sidebar.module';
     CoreModule,
     ToolboxModule,
     SidebarModule,
+    CanvasModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
