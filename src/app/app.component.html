@@ -1,8 +1,26 @@
-<!-- toolbar -->
-<app-toolbar></app-toolbar>
+<div fxLayout="column" style="height: 100%">
+  <!-- Toolbar / menu bar -->
+  <app-toolbar></app-toolbar>
 
-<!-- button sidebar -->
+  <mat-drawer-container fxFlex>
+    <!-- Toolbox -->
+    <mat-drawer #toolboxDrawer  mode="side" opened>
+      <app-toolbox></app-toolbox>
+    </mat-drawer>
 
-<!-- canvas -->
+    <!-- Layers/Key sidebar -->
+    <mat-drawer #drawer2  mode="side" opened position="end">
+      Placeholder...
+    </mat-drawer>
+    
+      <!-- canvas -->
+    <mat-drawer-content>
+      Canvas placeholder...
+    </mat-drawer-content>
 
-<!-- layers/key sidebar -->
+
+  </mat-drawer-container>
+
+</div>
+
+

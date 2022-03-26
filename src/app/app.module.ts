@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ToolboxModule } from './toolbox/toolbox.module';
 
 @NgModule({
   declarations: [
@@ -16,9 +17,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    CoreModule,
     MaterialModule,
     FlexLayoutModule,
+
+    CoreModule,
+    ToolboxModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
