@@ -11,6 +11,7 @@ import { ToolboxModule } from './toolbox/toolbox.module';
 import { SidebarComponent } from './sidebar/components/sidebar/sidebar.component';
 import { SidebarModule } from './sidebar/sidebar.module';
 import { CanvasModule } from './canvas/canvas.module';
+import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CanvasModule } from './canvas/canvas.module';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
+    NgxsModule.forRoot(),
 
     CoreModule,
     ToolboxModule,

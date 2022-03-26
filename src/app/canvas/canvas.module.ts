@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CanvasComponent } from './canvas/canvas.component';
 import { MaterialModule } from '../material.module';
+import { NgxsModule } from '@ngxs/store';
+import { ProjectState } from '../core/state/project.state';
 
 
 
@@ -11,7 +13,8 @@ import { MaterialModule } from '../material.module';
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    NgxsModule.forFeature([ProjectState])
   ],
   exports: [
     CanvasComponent,

@@ -4,18 +4,18 @@
 
   <mat-drawer-container fxFlex>
     <!-- Toolbox -->
-    <mat-drawer #toolboxDrawer  mode="side" opened>
+    <mat-drawer #toolboxDrawer mode="side" opened>
       <app-toolbox></app-toolbox>
     </mat-drawer>
 
     <!-- Layers/Key sidebar -->
-    <mat-drawer #sidebarDrawer  mode="side" opened position="end">
-      <app-sidebar [project]="currentProject"></app-sidebar>
+    <mat-drawer #sidebarDrawer mode="side" opened position="end">
+      <app-sidebar></app-sidebar>
     </mat-drawer>
     
       <!-- canvas -->
     <mat-drawer-content>
-      <app-canvas [project]="currentProject"></app-canvas>
+      <app-canvas></app-canvas>
     </mat-drawer-content>
 
 

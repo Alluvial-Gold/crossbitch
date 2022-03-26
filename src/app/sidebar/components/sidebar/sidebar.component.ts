@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Project } from 'src/app/core/models/project.model';
+import { ProjectModel } from 'src/app/core/state/project.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,8 +7,6 @@ import { Project } from 'src/app/core/models/project.model';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-
-  @Input() project!: Project;
 
   constructor() { }
 

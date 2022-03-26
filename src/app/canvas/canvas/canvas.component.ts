@@ -1,6 +1,9 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { Observable, Subscription } from 'rxjs';
 import { SQUARE_SIZE } from 'src/app/core/constants';
-import { Project } from 'src/app/core/models/project.model';
+import { ProjectModel } from 'src/app/core/state/project.model';
+import { ProjectState } from 'src/app/core/state/project.state';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
@@ -11,10 +14,13 @@ const ZOOM_INC = 0.1;
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, OnDestroy {
 
-  @Input()
-  project!: Project;
+  sub: Subscription = new Subscription();
+
+  @Select(ProjectState.getProject)
+  project$!: Observable<ProjectModel>;
+  project: ProjectModel | undefined;
 
   @ViewChild('mainCanvas', {static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -57,6 +63,17 @@ export class CanvasComponent implements OnInit {
         this.draw();
       }
     }
+    
+    this.sub.add(
+      this.project$.subscribe((project) => {
+        this.project = project;
+        this.draw();
+      })
+    )
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -83,6 +100,10 @@ export class CanvasComponent implements OnInit {
   }
 
   draw() {
+    if (!this.project) {
+      return;
+    }
+
     this.clear();
 
     let width = this.project.canvasSettings.columns * SQUARE_SIZE;
@@ -93,10 +114,9 @@ export class CanvasComponent implements OnInit {
     this.ctx.fillRect(0, 0, width, height);
 
     // 2. Draw layers
-    this.project.layers.forEach(layer => {
-      // TODO
-      layer.drawLayer(this.ctx);
-    });
+    for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
+      this.project.layers[layerIdx].drawLayer(this.ctx, this.project.palette);
+    }
 
     // 3. Draw lines on top
     this.drawLines(width, height);
@@ -113,6 +133,12 @@ export class CanvasComponent implements OnInit {
   }
 
   zoomToFit() {
+    if (!this.project) {
+      return;
+    }
+
+    console.log('zoom to fit');
+
     let zoomMargin = 20 * SQUARE_SIZE;
 
     // Size 1
@@ -188,6 +214,8 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyTransform() {
+    //console.log(`${this.zoomFactor}, ${this.transformX}, ${this.transformY}`);
+
     this.ctx.setTransform(this.zoomFactor, 0, 0, this.zoomFactor, this.transformX, this.transformY);
     this.draw();
   }

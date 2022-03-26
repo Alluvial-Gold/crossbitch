@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CanvasSettings } from './core/models/canvas-settings.model';
-import { Project } from './core/models/project.model';
-import { SquareLayer } from './core/models/square-layer.model';
+import { Store } from '@ngxs/store';
+import { Project } from './core/state/project.actions';
 
 @Component({
   selector: 'app-root',
@@ -10,18 +9,13 @@ import { SquareLayer } from './core/models/square-layer.model';
 })
 export class AppComponent implements OnInit {
   
-  currentProject!: Project;
+  constructor(
+    private store: Store
+  ) {}
 
   ngOnInit(): void {
-    // DEFAULT STUFF
-    let settings = new CanvasSettings(89, 94, '#ffffff');
-    this.currentProject = new Project(settings)
+    // Temporary - create new project
+    this.store.dispatch(new Project.CreateProject(89, 94));
 
-    // TEMP
-    this.currentProject.layers.forEach((layer) => {
-      if (layer instanceof SquareLayer) {
-        layer.updatePalette(this.currentProject.palette);
-      }
-    })
   }
 }
