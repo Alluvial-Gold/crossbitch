@@ -1,0 +1,16 @@
+<mat-toolbar style="height: 80px;">
+  <mat-icon style="height: 40px; width: 40px; font-size: 40px;">dashboard</mat-icon>
+
+  <div fxLayout="column" style="margin: 0 0 0 10px">
+    <div style="margin: 0 0 0 20px;">CrossBitch</div>
+    <div>
+      <!-- menus... -->
+      <button mat-button [matMenuTriggerFor]="file">File</button>
+      <mat-menu #file="matMenu">
+        <button mat-menu-item>New...</button>
+        <button mat-menu-item>Export</button>
+      </mat-menu>
+    </div>
+  </div>
+
+</mat-toolbar>
