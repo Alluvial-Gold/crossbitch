@@ -1,15 +1,20 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SQUARE_SIZE } from 'src/app/core/constants';
-import { ILayer } from 'src/app/core/state/ilayer.interface';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
+import { SquareLayer } from 'src/app/core/state/square-layer.model';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
 const ZOOM_INC = 0.1;
+
+interface Point {
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-canvas',
@@ -44,7 +49,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
   private zoomFactor = 1;
   private transformX = 0;
   private transformY = 0;
-  private isDragging = false;
+  private isPanDragging = false;
+  private isDrawDragging = false;
 
   private gridPattern!: CanvasPattern;
 
@@ -70,8 +76,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
     
     this.sub.add(
       this.project$.subscribe((project) => {
-        console.log('project change');
-
         this.project = project;
         this.redraw();
       })
@@ -138,30 +142,46 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.ctx.fillRect(0, 0, width, height);
   }
 
-  // colour in single square :)
-  private colourSquare(mouseX: number, mouseY: number) {
-    // 1. Figure out which square we're clicking on
+  private getSquare(mouseX: number, mouseY: number): Point | null {
     let xInCanvas = mouseX - this.transformX;
     let yInCanvas = mouseY - this.transformY;
     let xValue = Math.floor(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
     let yValue = Math.floor(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
 
-    // If within canvas, dispatch cation
     if (this.project && 
         xValue >= 0 && xValue < this.project.canvasSettings.columns && 
         yValue >= 0 && yValue < this.project.canvasSettings.rows) {
-      console.log('in canvas');
-      this.store.dispatch(new Project.FillSquare(xValue, yValue));
+      return { x: xValue, y: yValue };
+    }
+    return null;
+  }
+
+  // colour in single square :)
+  private colourSquare(mouseX: number, mouseY: number) {
+    if (!this.project) {
+      return;
     }
 
+    let squareValue = this.getSquare(mouseX, mouseY);
+    if (!squareValue) {
+      return;
+    }
+
+    let currentLayer = this.project.layers[this.project.currentLayerIndex];
+    if (currentLayer instanceof SquareLayer) {
+      let currentValue = currentLayer.values[squareValue.y][squareValue.x];
+
+      // TODO update this - check if current square is already filled with current colour
+      if (currentValue != 0) {
+        this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x));
+      }
+    }
   }
 
   zoomToFit() {
     if (!this.project) {
       return;
     }
-
-    console.log('zoom to fit');
 
     let zoomMargin = 20 * SQUARE_SIZE;
 
@@ -192,32 +212,38 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(e: Event) {
-
     if (e instanceof MouseEvent && e.button == 0) {
       // Right mouse button to do things
       // TODO - check which mode we're in
-      console.log(e);
       this.colourSquare(e.offsetX, e.offsetY);
+      this.isDrawDragging = true; // ???
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
-      this.isDragging = true;
+      this.isPanDragging = true;
     }
   }
 
   onMouseMove(e: Event) {
-    if (this.isDragging && e instanceof MouseEvent) {
-      let moveX = e.movementX;
-      let moveY = e.movementY;
-
-      this.transformX += moveX;
-      this.transformY += moveY;
-
-      this.applyTransform();
+    if (this.isPanDragging && e instanceof MouseEvent) {
+        // Pan
+        let moveX = e.movementX;
+        let moveY = e.movementY;
+  
+        this.transformX += moveX;
+        this.transformY += moveY;
+  
+        this.applyTransform();
+    } else if (this.isDrawDragging && e instanceof MouseEvent) {
+      console.log(e);
+        // Again check mode TODO
+        console.log(`${e.offsetX}, ${e.offsetY}`);
+        this.colourSquare(e.offsetX, e.offsetY);
     }
   }
 
   onMouseUp(e: Event) {
-    this.isDragging = false;
+    this.isPanDragging = false;
+    this.isDrawDragging = false;
   }
 
   onSpacebar() {

@@ -11,8 +11,6 @@ import { ProjectModel } from "./project.model";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
-// TODO default state
-
 @State<ProjectModel>({
   name: PROJECT_STATE_TOKEN
 })
@@ -20,7 +18,6 @@ const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 export class ProjectState {
 
   constructor() {
-    // TODO
   }
 
   @Selector([PROJECT_STATE_TOKEN])
@@ -89,20 +86,16 @@ export class ProjectState {
     ctx: StateContext<ProjectModel>,
     action: Project.FillSquare
   ) {
-    // IF current layer is square layer, fill square
+    // If current layer is square layer, fill square
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
 
-    console.log(`${action.row}, ${action.column}`);
-
     if (currentLayer instanceof SquareLayer) {
-      console.log('here');
-      currentLayer.values[action.row][action.column] = 0; // TODO
+      currentLayer.values[action.row][action.column] = 0; // TODO - bring in palette colour
 
+      // TODO: figure out a nicer way to do this
       let newLayers = state.layers;
       newLayers[state.currentLayerIndex] = currentLayer;
-
-      // :///
       ctx.patchState({
         layers: newLayers
       });

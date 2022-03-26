@@ -24,13 +24,13 @@ export class SquareLayer implements ILayer {
 
     // TEST - simple pattern
     this.values[3][3] = 0;
-    this.values[6][3] = 0;
-    this.values[3][7] = 0;
-    this.values[4][7] = 0;
-    this.values[5][7] = 0;
-    this.values[6][7] = 0;
-    this.values[2][6] = 0;
+    this.values[3][6] = 0;
+    this.values[7][3] = 0;
+    this.values[7][4] = 0;
+    this.values[7][5] = 0;
     this.values[7][6] = 0;
+    this.values[6][2] = 0;
+    this.values[6][7] = 0;
   }
 
   // TODO - resize canvas
@@ -43,7 +43,7 @@ export class SquareLayer implements ILayer {
         if (value != -1) {
           // draw square
           ctx.fillStyle = palette[value].floss.colour;
-          ctx.fillRect(rowIdx * SQUARE_SIZE, colIdx * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+          ctx.fillRect(colIdx * SQUARE_SIZE, rowIdx * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
           // TODO - other styles
         }
