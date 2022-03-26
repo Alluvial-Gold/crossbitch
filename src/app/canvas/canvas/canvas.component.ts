@@ -1,7 +1,9 @@
 import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SQUARE_SIZE } from 'src/app/core/constants';
+import { ILayer } from 'src/app/core/state/ilayer.interface';
+import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 
@@ -46,7 +48,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   private gridPattern!: CanvasPattern;
 
-  constructor() {}
+  constructor(
+    private store: Store,
+  ) {}
 
   ngOnInit(): void {
     let ctx = this.canvas?.nativeElement.getContext('2d');
@@ -60,14 +64,16 @@ export class CanvasComponent implements OnInit, OnDestroy {
       var pattern = this.ctx.createPattern(img, 'repeat');
       if (pattern) {
         this.gridPattern = pattern;
-        this.draw();
+        this.redraw();
       }
     }
     
     this.sub.add(
       this.project$.subscribe((project) => {
+        console.log('project change');
+
         this.project = project;
-        this.draw();
+        this.redraw();
       })
     )
   }
@@ -83,7 +89,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
       this.canvas.nativeElement.height =  this.canvas.nativeElement.offsetHeight;
     }
 
-    this.draw();
+    this.redraw();
     this.zoomToFit();
   }
 
@@ -99,7 +105,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.ctx.clearRect(clearX, clearY, clearWidth, clearHeight);
   }
 
-  draw() {
+  redraw() {
     if (!this.project) {
       return;
     }
@@ -119,7 +125,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     }
 
     // 3. Draw lines on top
-    this.drawLines(width, height);
+    this.drawGridLines(width, height);
 
     // 4. Draw text for lines outside of box
     // TODO - later
@@ -127,9 +133,27 @@ export class CanvasComponent implements OnInit, OnDestroy {
     // 5. Draw center line - later
   }
 
-  private drawLines(width: number, height: number) {
+  private drawGridLines(width: number, height: number) {
     this.ctx.fillStyle = this.gridPattern;
     this.ctx.fillRect(0, 0, width, height);
+  }
+
+  // colour in single square :)
+  private colourSquare(mouseX: number, mouseY: number) {
+    // 1. Figure out which square we're clicking on
+    let xInCanvas = mouseX - this.transformX;
+    let yInCanvas = mouseY - this.transformY;
+    let xValue = Math.floor(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
+    let yValue = Math.floor(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
+
+    // If within canvas, dispatch cation
+    if (this.project && 
+        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
+        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+      console.log('in canvas');
+      this.store.dispatch(new Project.FillSquare(xValue, yValue));
+    }
+
   }
 
   zoomToFit() {
@@ -168,8 +192,14 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(e: Event) {
-    // Middle mouse button to drag
-    if (e instanceof MouseEvent && e.button == 1) {
+
+    if (e instanceof MouseEvent && e.button == 0) {
+      // Right mouse button to do things
+      // TODO - check which mode we're in
+      console.log(e);
+      this.colourSquare(e.offsetX, e.offsetY);
+    } else if (e instanceof MouseEvent && e.button == 1) {
+      // Middle mouse button to drag
       this.isDragging = true;
     }
   }
@@ -191,7 +221,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   onSpacebar() {
-    console.log('spacebar');
     this.zoomToFit();
   }
 
@@ -217,7 +246,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     //console.log(`${this.zoomFactor}, ${this.transformX}, ${this.transformY}`);
 
     this.ctx.setTransform(this.zoomFactor, 0, 0, this.zoomFactor, this.transformX, this.transformY);
-    this.draw();
+    this.redraw();
   }
 
 }

@@ -34,6 +34,11 @@ export class ProjectState {
   }
 
   @Selector([PROJECT_STATE_TOKEN])
+  static getCurrentLayer(state: ProjectModel): ILayer {
+    return state.layers[state.currentLayerIndex];
+  }
+
+  @Selector([PROJECT_STATE_TOKEN])
   static getPalette(state: ProjectModel): PaletteEntry[] {
     return state.palette;
   }
@@ -44,23 +49,63 @@ export class ProjectState {
     action: Project.CreateProject
   ) {
     
-    let settings: CanvasSettings = new CanvasSettings(action.rows, action.columns, 'white');
+    let settings: CanvasSettings = {
+      rows: action.rows,
+      columns: action.columns,
+      backgroundColour: 'white' 
+    };
 
     // Start with single SquareLayer
     let layer1 = new SquareLayer("Square1", action.rows, action.columns);
     let layers = [layer1];
 
     // Start with black
-    let blackFloss = new Floss("Default black", "#000000");
-    let blackFlossSymbol = new PatternSymbol("a");
-    let palette = [new PaletteEntry(blackFlossSymbol, blackFloss)];
+    let blackFloss: Floss = {
+      description: "Default black",
+      colour: "#000000"
+    };
+    let blackFlossSymbol: PatternSymbol = {
+      value: "a"
+    };
+    let palette: PaletteEntry[] = [
+      {
+        floss: blackFloss,
+        symbol: blackFlossSymbol
+      }
+    ];
 
     ctx.patchState({
       canvasSettings: settings,
       layers: layers,
+      currentLayerIndex: 0,
       palette: palette
     });
 
   }
 
+  // Should this be here or somewhere else?
+  @Action(Project.FillSquare)
+  fillSquare(
+    ctx: StateContext<ProjectModel>,
+    action: Project.FillSquare
+  ) {
+    // IF current layer is square layer, fill square
+    let state = ctx.getState();
+    let currentLayer = state.layers[state.currentLayerIndex];
+
+    console.log(`${action.row}, ${action.column}`);
+
+    if (currentLayer instanceof SquareLayer) {
+      console.log('here');
+      currentLayer.values[action.row][action.column] = 0; // TODO
+
+      let newLayers = state.layers;
+      newLayers[state.currentLayerIndex] = currentLayer;
+
+      // :///
+      ctx.patchState({
+        layers: newLayers
+      });
+    }
+  }
 }

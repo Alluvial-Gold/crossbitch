@@ -16,4 +16,9 @@ export namespace Project {
 
   // Get layers
 
+  // Draw on layer
+  export class FillSquare {
+    static readonly type = '[Project] FillSquare';
+    constructor(public row: number, public column: number) {}
+  }
 }

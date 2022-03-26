@@ -7,6 +7,7 @@ export interface ProjectModel {
   canvasSettings: CanvasSettings;
 
   layers: ILayer[];
+  currentLayerIndex: number;
 
   // TODO - should this be a map?
   palette: PaletteEntry[];
