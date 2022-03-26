@@ -7,7 +7,7 @@ const ZOOM_INC = 0.1;
 
 // px per stitch
 const SQUARE_SIZE = 20;
-const BORDER_WIDTH = 1;
+
 
 @Component({
   selector: 'app-canvas',
@@ -22,6 +22,17 @@ export class CanvasComponent implements OnInit {
   @ViewChild('mainCanvas', {static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
 
+  @HostListener('document:keyup', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    switch (event.key) {
+      case ' ':
+        this.zoomToFit()
+        break;
+      default:
+        break;
+    }
+  }
+
   private ctx!: CanvasRenderingContext2D;
 
   // Transform...
@@ -30,12 +41,24 @@ export class CanvasComponent implements OnInit {
   private transformY = 0;
   private isDragging = false;
 
-  constructor() { }
+  private gridPattern!: CanvasPattern;
+
+  constructor() {}
 
   ngOnInit(): void {
     let ctx = this.canvas?.nativeElement.getContext('2d');
     if (ctx) {
       this.ctx = ctx;
+    }
+
+    var img = new Image();
+    img.src = '../../assets/gridpattern.png';
+    img.onload = () => {
+      var pattern = this.ctx.createPattern(img, 'repeat');
+      if (pattern) {
+        this.gridPattern = pattern;
+        this.draw();
+      }
     }
   }
 
@@ -53,11 +76,11 @@ export class CanvasComponent implements OnInit {
   clear() {
     let margin = 10;
 
-    let clearX = -(this.transformX * (1/this.zoomFactor)) - margin;
-    let clearY = -(this.transformY * (1/this.zoomFactor)) - margin;
+    let clearX = -(this.transformX / this.zoomFactor) - margin;
+    let clearY = -(this.transformY / this.zoomFactor) - margin;
 
-    let clearWidth = 2 * margin + this.ctx.canvas.width * (1/this.zoomFactor);
-    let clearHeight = 2 * margin + this.ctx.canvas.height * (1/this.zoomFactor);
+    let clearWidth = 2 * margin + this.ctx.canvas.width / this.zoomFactor;
+    let clearHeight = 2 * margin + this.ctx.canvas.height /this.zoomFactor;
 
     this.ctx.clearRect(clearX, clearY, clearWidth, clearHeight);
   }
@@ -88,35 +111,8 @@ export class CanvasComponent implements OnInit {
   }
 
   private drawLines(width: number, height: number) {
-    this.ctx.strokeStyle = 'grey';
-    this.ctx.lineWidth = 0.5;
-    this.ctx.beginPath();
-
-    for (let rowIdx = 0; rowIdx < this.project.canvasSettings.rows + 1; rowIdx++) {
-      this.ctx.moveTo(0, rowIdx * SQUARE_SIZE);
-      this.ctx.lineTo(width, rowIdx * SQUARE_SIZE);
-    }
-
-    for (let colIdx = 0; colIdx < this.project.canvasSettings.columns + 1; colIdx++) {
-      this.ctx.moveTo(colIdx * SQUARE_SIZE, 0);
-      this.ctx.lineTo(colIdx * SQUARE_SIZE, height);
-    }
-    this.ctx.stroke();
-
-    // & 10 lines
-    this.ctx.strokeStyle = '#555555';
-    this.ctx.beginPath();
-
-    for (let rowIdx = 0; rowIdx < this.project.canvasSettings.rows + 1; rowIdx += 10) {
-      this.ctx.moveTo(0, rowIdx * SQUARE_SIZE);
-      this.ctx.lineTo(width, rowIdx * SQUARE_SIZE);
-    }
-
-    for (let colIdx = 0; colIdx < this.project.canvasSettings.columns + 1; colIdx += 10) {
-      this.ctx.moveTo(colIdx * SQUARE_SIZE, 0);
-      this.ctx.lineTo(colIdx * SQUARE_SIZE, height);
-    }
-    this.ctx.stroke();
+    this.ctx.fillStyle = this.gridPattern;
+    this.ctx.fillRect(0, 0, width, height);
   }
 
   zoomToFit() {
