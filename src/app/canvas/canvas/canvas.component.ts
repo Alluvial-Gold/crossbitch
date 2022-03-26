@@ -1,13 +1,10 @@
 import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { SQUARE_SIZE } from 'src/app/core/constants';
 import { Project } from 'src/app/core/models/project.model';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
 const ZOOM_INC = 0.1;
-
-// px per stitch
-const SQUARE_SIZE = 20;
-
 
 @Component({
   selector: 'app-canvas',
