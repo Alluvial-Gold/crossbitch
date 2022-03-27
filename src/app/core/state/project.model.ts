@@ -11,5 +11,6 @@ export interface ProjectModel {
 
   // TODO - should this be a map?
   palette: PaletteEntry[];
+  currentPaletteColourIndex: number;
 
 }

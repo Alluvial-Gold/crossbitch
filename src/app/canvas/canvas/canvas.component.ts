@@ -168,7 +168,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  // colour in single square :)
   private colourSquare(mouseX: number, mouseY: number, remove: boolean = false) {
     if (!this.project) {
       return;
@@ -183,8 +182,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     if (currentLayer instanceof SquareLayer) {
       let currentValue = currentLayer.values[squareValue.y][squareValue.x];
 
-      // TODO update this - check if current square is already filled with current colour
-      let index = remove ? -1 : 0; // TODO get from palette
+      // Check if current square is already filled with current colour
+      let index = remove ? -1 : this.project.currentPaletteColourIndex;
       if (currentValue != index) {
         this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x, index));
       }

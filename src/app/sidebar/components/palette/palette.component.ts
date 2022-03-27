@@ -20,7 +20,11 @@ export class PaletteComponent implements OnInit, OnDestroy {
   palette$!: Observable<PaletteEntry[]>;
   palette: PaletteEntry[] = [];
 
-  displayedColumns: string[] = [ 'symbol', 'name', 'colour', 'strands'];
+  @Select(ProjectState.getCurrentColour)
+  currentColour$!: Observable<PaletteEntry>;
+  currentColour?: PaletteEntry;
+
+  displayedColumns: string[] = [ 'symbol', 'name', 'strands'];
 
   constructor(
     public dialog: MatDialog,
@@ -32,7 +36,13 @@ export class PaletteComponent implements OnInit, OnDestroy {
       this.palette$.subscribe((palette) => {
         this.palette = palette;
       })
-    )
+    );
+
+    this.sub.add(
+      this.currentColour$.subscribe((currentColour) => {
+        this.currentColour = currentColour;
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -49,6 +59,12 @@ export class PaletteComponent implements OnInit, OnDestroy {
         this.store.dispatch(new Project.AddPaletteEntry(result));
       }
     })
+  }
+
+  selectRow(row: PaletteEntry) {
+    if (row != this.currentColour) {
+      this.store.dispatch(new Project.SelectPaletteColour(row));
+    }
   }
 
 }

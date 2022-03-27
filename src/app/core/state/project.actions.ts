@@ -16,9 +16,13 @@ export namespace Project {
     constructor(public layerName: string) {}
   }
   
-  // Update project palette
   export class AddPaletteEntry {
     static readonly type = '[Project] AddPaletteEntry';
+    constructor(public paletteEntry: PaletteEntry) {}
+  }
+
+  export class SelectPaletteColour {
+    static readonly type = '[Project] SelectPaletteColour';
     constructor(public paletteEntry: PaletteEntry) {}
   }
 

@@ -41,6 +41,11 @@ export class ProjectState {
     return [...state.palette];
   }
 
+  @Selector([PROJECT_STATE_TOKEN])
+  static getCurrentColour(state: ProjectModel): PaletteEntry {
+    return state.palette[state.currentPaletteColourIndex];
+  }
+
   @Action(Project.CreateProject)
   createProject(
     ctx: StateContext<ProjectModel>,
@@ -78,7 +83,8 @@ export class ProjectState {
       canvasSettings: settings,
       layers: layers,
       currentLayerIndex: 0,
-      palette: palette
+      palette: palette,
+      currentPaletteColourIndex: 0
     });
 
   }
@@ -111,6 +117,21 @@ export class ProjectState {
     ctx.patchState({
       palette: newPalette
     });
+  }
+
+  @Action(Project.SelectPaletteColour)
+  selectPaletteColour(
+    ctx: StateContext<ProjectModel>,
+    action: Project.SelectPaletteColour
+  ) {
+    let state = ctx.getState();
+
+    let selectedColourIndex = state.palette.findIndex((c) => c === action.paletteEntry);
+    if (selectedColourIndex != -1) {
+      ctx.patchState({
+        currentPaletteColourIndex: selectedColourIndex
+      })
+    }
   }
 
 
