@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Floss } from 'src/app/core/state/floss.model';
 import { DMCFlossList } from 'src/assets/DMCColourList';
 import { map, startWith } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
 
 @Component({
@@ -29,9 +29,23 @@ export class AddPaletteEntryDialogComponent implements OnInit {
   });
   filteredFlosses: Observable<Floss[]>;
 
+  isEditMode = false;
+
   constructor(
-    public dialogRef: MatDialogRef<AddPaletteEntryDialogComponent>
+    public dialogRef: MatDialogRef<AddPaletteEntryDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: PaletteEntry,
   ) {
+    if (data) {
+      this.isEditMode = true;
+
+      // Populate data...
+      this.paletteEntryForm.patchValue({
+        floss: data.floss,
+        symbol: data.symbol.value,
+        strands: data.strands
+      })
+    }
+
     this.filteredFlosses = this.paletteEntryForm.controls['floss'].valueChanges.pipe(
       startWith(''),
       map(state => (state ? this.filterFlosses(state) : this.DMCFlosses.slice())),

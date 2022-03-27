@@ -21,6 +21,11 @@ export namespace Project {
     constructor(public paletteEntry: PaletteEntry) {}
   }
 
+  export class UpdateCurrentPaletteEntry {
+    static readonly type = '[Project] UpdateCurrentPaletteEntry';
+    constructor(public paletteEntry: PaletteEntry) {}
+  }
+
   export class SelectPaletteColour {
     static readonly type = '[Project] SelectPaletteColour';
     constructor(public paletteEntry: PaletteEntry) {}

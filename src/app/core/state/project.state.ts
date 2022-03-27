@@ -63,6 +63,7 @@ export class ProjectState {
     let layer2 = new BackStitchLayer("Backstitch1");
     let layers = [layer1, layer2];
 
+    // TODO make this better
     // Start with black
     let blackFloss: Floss = {
       description: "Default black",
@@ -113,6 +114,21 @@ export class ProjectState {
 
     let newPalette = state.palette;
     newPalette.push(action.paletteEntry);
+
+    ctx.patchState({
+      palette: newPalette
+    });
+  }
+
+  @Action(Project.UpdateCurrentPaletteEntry)
+  updateCurrentPaletteEntry(
+    ctx: StateContext<ProjectModel>,
+    action: Project.UpdateCurrentPaletteEntry
+  ) {
+    let state = ctx.getState();
+
+    let newPalette = state.palette;
+    newPalette[state.currentPaletteColourIndex] = action.paletteEntry;
 
     ctx.patchState({
       palette: newPalette

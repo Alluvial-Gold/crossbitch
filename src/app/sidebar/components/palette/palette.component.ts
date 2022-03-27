@@ -49,7 +49,7 @@ export class PaletteComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  openDialog(): void {
+  openAddDialog(): void {
     const dialogRef = this.dialog.open(AddPaletteEntryDialogComponent, {
       width: '400px'
     });
@@ -57,6 +57,19 @@ export class PaletteComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.store.dispatch(new Project.AddPaletteEntry(result));
+      }
+    })
+  }
+
+  openEditDialog(): void {
+    const dialogRef = this.dialog.open(AddPaletteEntryDialogComponent, {
+      width: '400px',
+      data: this.currentColour,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(new Project.UpdateCurrentPaletteEntry(result));
       }
     })
   }
