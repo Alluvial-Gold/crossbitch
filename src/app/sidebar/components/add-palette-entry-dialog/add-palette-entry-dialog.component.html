@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Add floss to palette</h1>
+
+<div mat-dialog-content>
+
+  <form class="example-form" [formGroup]="paletteEntryForm">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>DMC Floss</mat-label>
+      <input matInput
+             aria-label="Floss"
+             [matAutocomplete]="auto"
+             formControlName="floss">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="getFlossText">
+        <mat-option *ngFor="let floss of filteredFlosses | async" [value]="floss" >
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+            <div style="height: 20px; width: 60px;" [style.background-color]="floss.colour"></div>
+            <span>{{floss.description}}</span>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Symbol</mat-label>
+      <input matInput formControlName="symbol">
+      <mat-error>Symbol must be one character</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Strands</mat-label>
+      <input matInput type="number" min="1" max="10" formControlName="strands">
+      <mat-error>Strands must be 1 - 10</mat-error>
+    </mat-form-field>
+  </form>
+
+
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button [mat-dialog-close]>Cancel</button>
+  <button mat-raised-button color="primary" (click)="submitForm()" [disabled]="paletteEntryForm.invalid">Ok</button>
+</div>

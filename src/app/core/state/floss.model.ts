@@ -6,7 +6,7 @@ export interface Floss {
   // Name of floss, etc.
   description: string;
 
-  // RBG colour?
+  // Hex colour
   colour: string;
 
 }

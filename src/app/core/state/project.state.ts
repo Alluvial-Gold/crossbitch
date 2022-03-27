@@ -38,7 +38,7 @@ export class ProjectState {
 
   @Selector([PROJECT_STATE_TOKEN])
   static getPalette(state: ProjectModel): PaletteEntry[] {
-    return state.palette;
+    return [...state.palette];
   }
 
   @Action(Project.CreateProject)
@@ -61,7 +61,7 @@ export class ProjectState {
     // Start with black
     let blackFloss: Floss = {
       description: "Default black",
-      colour: "#000000"
+      colour: "#000000",
     };
     let blackFlossSymbol: PatternSymbol = {
       value: "a"
@@ -69,6 +69,7 @@ export class ProjectState {
     let palette: PaletteEntry[] = [
       {
         floss: blackFloss,
+        strands: 2,
         symbol: blackFlossSymbol
       }
     ];
@@ -95,6 +96,21 @@ export class ProjectState {
         currentLayerIndex: newIdx
       });
     }
+  }
+
+  @Action(Project.AddPaletteEntry)
+  addPaletteEntry(
+    ctx: StateContext<ProjectModel>,
+    action: Project.AddPaletteEntry
+  ) {
+    let state = ctx.getState();
+
+    let newPalette = state.palette;
+    newPalette.push(action.paletteEntry);
+
+    ctx.patchState({
+      palette: newPalette
+    });
   }
 
 

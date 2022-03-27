@@ -30,7 +30,6 @@ export class SettingsState {
     ctx: StateContext<SettingsModel>,
     action: Settings.SelectToolboxMode
   ) {
-    console.log('change toolbox mode');
     ctx.patchState({
       currentToolboxMode: action.mode
     })

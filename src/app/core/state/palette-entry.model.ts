@@ -5,6 +5,9 @@ export interface PaletteEntry {
 
   symbol: PatternSymbol;
 
+  // Number of strands
+  strands: number;
+
   floss: Floss;
 
 }

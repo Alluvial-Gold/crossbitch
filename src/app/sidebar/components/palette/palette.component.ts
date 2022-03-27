@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Select } from '@ngxs/store';
+import { MatDialog } from '@angular/material/dialog';
+import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
+import { Project } from 'src/app/core/state/project.actions';
 import { ProjectState } from 'src/app/core/state/project.state';
+import { AddPaletteEntryDialogComponent } from '../add-palette-entry-dialog/add-palette-entry-dialog.component';
 
 @Component({
   selector: 'app-palette',
@@ -17,9 +20,12 @@ export class PaletteComponent implements OnInit, OnDestroy {
   palette$!: Observable<PaletteEntry[]>;
   palette: PaletteEntry[] = [];
 
-  displayedColumns: string[] = [ 'symbol', 'name', 'colour'];
+  displayedColumns: string[] = [ 'symbol', 'name', 'colour', 'strands'];
 
-  constructor() { }
+  constructor(
+    public dialog: MatDialog,
+    private store: Store
+  ) { }
 
   ngOnInit(): void {
     this.sub.add(
@@ -31,6 +37,18 @@ export class PaletteComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddPaletteEntryDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(new Project.AddPaletteEntry(result));
+      }
+    })
   }
 
 }

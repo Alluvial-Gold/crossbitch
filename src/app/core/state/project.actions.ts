@@ -1,11 +1,11 @@
+import { PaletteEntry } from "./palette-entry.model";
+
 export namespace Project {
 
   export class CreateProject {
     static readonly type = '[Project] CreateProject';
     constructor(public rows: number, public columns: number) {}
   }
-
-  // Update project palette
 
   // Add layer
 
@@ -15,6 +15,13 @@ export namespace Project {
     static readonly type = '[Project] SelectLayer';
     constructor(public layerName: string) {}
   }
+  
+  // Update project palette
+  export class AddPaletteEntry {
+    static readonly type = '[Project] AddPaletteEntry';
+    constructor(public paletteEntry: PaletteEntry) {}
+  }
+
 
   export class FillSquare {
     static readonly type = '[Project] FillSquare';
@@ -22,4 +29,6 @@ export namespace Project {
   }
 
   // Draw backstitch line
+
+
 }
