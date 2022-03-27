@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
 import { CanvasSettings } from "./canvas-settings.model";
 import { ILayer } from "./ilayer.interface";
 import { PaletteEntry } from "./palette-entry.model";
-import { BasicLayer } from "./basic-layer.model";
+import { BackstitchLine, BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
@@ -147,12 +147,54 @@ export class ProjectState {
     ctx: StateContext<ProjectModel>,
     action: Project.FillSquare
   ) {
-    // If current layer is square layer, fill square
+    // If current layer is basic layer, fill square
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
 
     if (currentLayer instanceof BasicLayer) {
       currentLayer.setFullStitch(action.index, action.row, action.column);
+
+      // TODO: figure out a nicer way to do this
+      let newLayers = state.layers;
+      newLayers[state.currentLayerIndex] = currentLayer;
+      ctx.patchState({
+        layers: newLayers
+      });
+    }
+  }
+
+  @Action(Project.DrawLine)
+  drawLine(
+    ctx: StateContext<ProjectModel>,
+    action: Project.DrawLine
+  ) {
+    // If current layer is basic layer, draw line
+    let state = ctx.getState();
+    let currentLayer = state.layers[state.currentLayerIndex];
+    
+    if (currentLayer instanceof BasicLayer) {
+      currentLayer.addBackStitch(action.line);
+
+      // TODO: figure out a nicer way to do this
+      let newLayers = state.layers;
+      newLayers[state.currentLayerIndex] = currentLayer;
+      ctx.patchState({
+        layers: newLayers
+      });
+    }
+  }
+
+  @Action(Project.UpdateLine)
+  updateLine(
+    ctx: StateContext<ProjectModel>,
+    action: Project.UpdateLine
+  ) {
+    // If current layer is basic layer, draw line
+    let state = ctx.getState();
+    let currentLayer = state.layers[state.currentLayerIndex];
+    
+    if (currentLayer instanceof BasicLayer) {
+      currentLayer.updateBackStitch(action.line);
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;

@@ -4,6 +4,9 @@ import { PaletteEntry } from "./palette-entry.model";
 export interface ILayer {
   name: string;
 
-  // Function for drawing the layer onto the canvas
-  drawLayer(ctx: CanvasRenderingContext2D, palette: PaletteEntry[]): void;
+  // Function for drawing the crossstitch layer onto the canvas
+  drawCrossstitchLayer(ctx: CanvasRenderingContext2D, palette: PaletteEntry[]): void;
+
+  // Function for drawing the backstitch layer onto the canvas
+  drawBackstitchLayer(ctx: CanvasRenderingContext2D, palette: PaletteEntry[]): void;
 }

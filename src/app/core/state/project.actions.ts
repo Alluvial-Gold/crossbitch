@@ -1,3 +1,4 @@
+import { BackstitchLine } from "./basic-layer.model";
 import { PaletteEntry } from "./palette-entry.model";
 
 export namespace Project {
@@ -37,7 +38,14 @@ export namespace Project {
     constructor(public row: number, public column: number, public index: number) {}
   }
 
-  // Draw backstitch line
+  export class DrawLine {
+    static readonly type = '[Project] DrawLine';
+    constructor(public line: BackstitchLine) {}
+  }
 
+  export class UpdateLine {
+    static readonly type = '[Project] UpdateLine';
+    constructor(public line: BackstitchLine) {}
+  }
 
 }

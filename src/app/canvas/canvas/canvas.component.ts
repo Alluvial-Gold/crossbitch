@@ -6,7 +6,7 @@ import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { SettingsState } from 'src/app/core/state/settings.state';
-import { BasicLayer } from 'src/app/core/state/basic-layer.model';
+import { BackstitchLine, BasicLayer } from 'src/app/core/state/basic-layer.model';
 import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
 import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 
@@ -62,6 +62,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
   private transformY = 0;
   private isPanDragging = false;
   private isDrawDragging = false;
+
+  private lineId = 0;
+  private currentLine: BackstitchLine | undefined;
 
   private gridPattern!: CanvasPattern;
 
@@ -146,18 +149,23 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, width, height);
 
-    // 2. Draw layers
+    // 2. Draw cross stitch layers
     for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
-      this.project.layers[layerIdx].drawLayer(this.ctx, this.project.palette);
+      this.project.layers[layerIdx].drawCrossstitchLayer(this.ctx, this.project.palette);
     }
 
     // 3. Draw lines on top
     this.drawGridLines(width, height);
 
-    // 4. Draw text for lines outside of box
+    // 4. Draw back stitch layers
+    for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
+      this.project.layers[layerIdx].drawBackstitchLayer(this.ctx, this.project.palette);
+    }
+
+    // 5.  Draw text for lines outside of box
     // TODO - later
 
-    // 5. Draw center line - later
+    // 6. Draw center line - later
   }
 
   private drawGridLines(width: number, height: number) {
@@ -170,6 +178,20 @@ export class CanvasComponent implements OnInit, OnDestroy {
     let yInCanvas = mouseY - this.transformY;
     let xValue = Math.floor(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
     let yValue = Math.floor(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
+
+    if (this.project && 
+        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
+        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+      return { x: xValue, y: yValue };
+    }
+    return null;
+  }
+
+  private getSquare_Round(mouseX: number, mouseY: number): Point | null {
+    let xInCanvas = mouseX - this.transformX;
+    let yInCanvas = mouseY - this.transformY;
+    let xValue = Math.round(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
+    let yValue = Math.round(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
 
     if (this.project && 
         xValue >= 0 && xValue < this.project.canvasSettings.columns && 
@@ -198,6 +220,51 @@ export class CanvasComponent implements OnInit, OnDestroy {
       if (currentValue != index) {
         this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x, index));
       }
+    }
+  }
+
+  private startDrawingLine(mouseX: number, mouseY: number) {
+    if (!this.project) {
+      return;
+    }
+
+    this.lineId++;
+
+    let squareValue = this.getSquare_Round(mouseX, mouseY);
+    if (squareValue) {
+      let startX = squareValue.x * SQUARE_SIZE;
+      let startY = squareValue.y * SQUARE_SIZE;
+      let index =  this.project.currentPaletteColourIndex;
+
+      this.currentLine = {
+        id: this.lineId.toString(),
+        startX: startX,
+        startY: startY,
+        endX: startX,
+        endY: startY,
+        paletteIdx: index,
+      };
+
+      this.store.dispatch(new Project.DrawLine(this.currentLine))
+    }
+  }
+
+  private updateLine(mouseX: number, mouseY: number) {
+    // assume that this is updating current line
+    if (!this.project || !this.currentLine) {
+      return;
+    }
+
+    let squareValue = this.getSquare_Round(mouseX, mouseY);
+    if (squareValue) {
+      let endX = squareValue.x * SQUARE_SIZE;
+      let endY = squareValue.y * SQUARE_SIZE;
+
+
+      this.currentLine.endX = endX;
+      this.currentLine.endY = endY;
+
+      this.store.dispatch(new Project.UpdateLine(this.currentLine))
     }
   }
 
@@ -242,6 +309,12 @@ export class CanvasComponent implements OnInit, OnDestroy {
           this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
           this.isDrawDragging = true;
         }
+      } else if (this.currentMode == ToolboxModes.Backstitch) {
+        if (this.currentTool == Tools.Draw) {
+          this.startDrawingLine(e.offsetX, e.offsetY);
+          this.isDrawDragging = true;
+        }
+        // TODO erase
       }
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
@@ -264,6 +337,10 @@ export class CanvasComponent implements OnInit, OnDestroy {
         if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
           this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
         }
+      } else if (this.currentMode == ToolboxModes.Backstitch) {
+        if (this.currentTool == Tools.Draw) {
+          this.updateLine(e.offsetX, e.offsetY);
+        }
       }
     }
   }
@@ -271,6 +348,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
   onMouseUp(e: Event) {
     this.isPanDragging = false;
     this.isDrawDragging = false;
+    this.currentLine = undefined;
   }
 
   onSpacebar() {
