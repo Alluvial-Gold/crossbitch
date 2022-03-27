@@ -7,7 +7,7 @@ import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { ToolboxMode } from 'src/app/core/state/settings.model';
 import { SettingsState } from 'src/app/core/state/settings.state';
-import { SquareLayer } from 'src/app/core/state/square-layer.model';
+import { BasicLayer } from 'src/app/core/state/basic-layer.model';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
@@ -179,8 +179,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     }
 
     let currentLayer = this.project.layers[this.project.currentLayerIndex];
-    if (currentLayer instanceof SquareLayer) {
-      let currentValue = currentLayer.values[squareValue.y][squareValue.x];
+    if (currentLayer instanceof BasicLayer) {
+      let currentValue = currentLayer.crossstitches[squareValue.y][squareValue.x];
 
       // Check if current square is already filled with current colour
       let index = remove ? -1 : this.project.currentPaletteColourIndex;

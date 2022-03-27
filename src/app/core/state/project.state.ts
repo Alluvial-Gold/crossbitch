@@ -3,10 +3,9 @@ import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
 import { CanvasSettings } from "./canvas-settings.model";
 import { ILayer } from "./ilayer.interface";
 import { PaletteEntry } from "./palette-entry.model";
-import { SquareLayer } from "./square-layer.model";
+import { BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
-import { BackStitchLayer } from "./backstitch-layer.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
@@ -57,10 +56,9 @@ export class ProjectState {
       backgroundColour: 'white' 
     };
 
-    // Start with single SquareLayer & Backstitch layer
-    let layer1 = new SquareLayer("Square1", action.rows, action.columns);
-    let layer2 = new BackStitchLayer("Backstitch1");
-    let layers = [layer1, layer2];
+    // Start with single layer
+    let layer = new BasicLayer("Base", action.rows, action.columns);
+    let layers = [layer];
 
     // Sample palette
     let dmcColours = ["552", "553", "209", "164", "989"];
@@ -144,8 +142,6 @@ export class ProjectState {
     }
   }
 
-
-  // Should this be here or somewhere else?
   @Action(Project.FillSquare)
   fillSquare(
     ctx: StateContext<ProjectModel>,
@@ -155,8 +151,8 @@ export class ProjectState {
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
 
-    if (currentLayer instanceof SquareLayer) {
-      currentLayer.values[action.row][action.column] = action.index;
+    if (currentLayer instanceof BasicLayer) {
+      currentLayer.setFullStitch(action.index, action.row, action.column);
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;

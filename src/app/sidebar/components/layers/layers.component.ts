@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { BackStitchLayer } from 'src/app/core/state/backstitch-layer.model';
 import { ILayer } from 'src/app/core/state/ilayer.interface';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectState } from 'src/app/core/state/project.state';
-import { SquareLayer } from 'src/app/core/state/square-layer.model';
+import { BasicLayer } from 'src/app/core/state/basic-layer.model';
 
 interface LayerWrapper {
   name: string,
@@ -59,10 +58,8 @@ export class LayersComponent implements OnInit {
 
   // Nice type
   private getType(layer: ILayer): string {
-    if (layer instanceof SquareLayer) {
-      return "Fill";
-    } else if (layer instanceof BackStitchLayer) {
-      return "Backstitch";
+    if (layer instanceof BasicLayer) {
+      return "Basic";
     }
     return "Layer";
   }

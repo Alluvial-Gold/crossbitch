@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { BackStitchLayer } from 'src/app/core/state/backstitch-layer.model';
 import { ILayer } from 'src/app/core/state/ilayer.interface';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { Settings } from 'src/app/core/state/settings.actions';
 import { ToolboxMode } from 'src/app/core/state/settings.model';
 import { SettingsState } from 'src/app/core/state/settings.state';
-import { SquareLayer } from 'src/app/core/state/square-layer.model';
+import { BasicLayer } from 'src/app/core/state/basic-layer.model';
 
 // buttons...
 interface ToolboxButton {
@@ -28,19 +27,19 @@ const TOOLS: Tool[] = [
     tool: ToolboxMode.Fill,
     name: "Fill squares",
     icon: "square",
-    isValid: (layer: ILayer) => { return layer instanceof SquareLayer; }
+    isValid: (layer: ILayer) => { return layer instanceof BasicLayer; }
   },
   {
     tool: ToolboxMode.Backstitch,
     name: "Backstitch",
     icon: "show_chart",
-    isValid: (layer: ILayer) => { return layer instanceof BackStitchLayer; }
+    isValid: (layer: ILayer) => { return layer instanceof BasicLayer; }
   },
   {
     tool: ToolboxMode.Remove,
     name: "Erase",
     icon: "clear",
-    isValid: (layer: ILayer) => { return layer instanceof SquareLayer; }
+    isValid: (layer: ILayer) => { return layer instanceof BasicLayer; }
   }
 ];
 

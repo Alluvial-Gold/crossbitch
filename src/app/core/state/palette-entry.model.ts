@@ -3,11 +3,14 @@ import { PatternSymbol } from "./pattern-symbol.model";
 
 export interface PaletteEntry {
 
-  symbol: PatternSymbol;
+  floss: Floss;
 
-  // Number of strands
+  // Cross stitch options
+  symbol: PatternSymbol;
   strands: number;
 
-  floss: Floss;
+  // TODO: back stitch options
+  // strands
+  // line type
 
 }
