@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
 import { CanvasSettings } from "./canvas-settings.model";
-import { Floss } from "./floss.model";
 import { ILayer } from "./ilayer.interface";
 import { PaletteEntry } from "./palette-entry.model";
-import { PatternSymbol } from "./pattern-symbol.model";
 import { SquareLayer } from "./square-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { BackStitchLayer } from "./backstitch-layer.model";
+import { DMCFlossList } from "src/assets/DMCFlossList";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
@@ -63,33 +62,28 @@ export class ProjectState {
     let layer2 = new BackStitchLayer("Backstitch1");
     let layers = [layer1, layer2];
 
-    // TODO make this better
-    // Start with black
-    let blackFloss: Floss = {
-      description: "Default black",
-      colour: "#000000",
-    };
-    let blackFlossSymbol: PatternSymbol = {
-      value: "a"
-    };
-    let palette: PaletteEntry[] = [
-      {
-        floss: blackFloss,
-        strands: 2,
-        symbol: blackFlossSymbol
+    // Sample palette
+    let dmcColours = ["552", "553", "209", "164", "989"];
+    let samplePalette: PaletteEntry[] = dmcColours.map((c) => {
+      let floss = DMCFlossList.find((f) => f.number == c);
+      return {
+        floss: {
+          description: floss ? `DMC ${floss.number} ${floss.name}` : '???',
+          colour: floss ? floss.hex : '#000000'
+        },
+        symbol: { value: 'a' },
+        strands: 2
       }
-    ];
+    });
 
     ctx.patchState({
       canvasSettings: settings,
       layers: layers,
       currentLayerIndex: 0,
-      palette: palette,
+      palette: samplePalette,
       currentPaletteColourIndex: 0
     });
-
   }
-
 
   @Action(Project.SelectLayer)
   selectLayer(

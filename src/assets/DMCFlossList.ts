@@ -1717,7 +1717,7 @@ export const DMCFlossList: DMCFloss[] = [
     },
     {
        number: "606",
-       name: "Orange?Red Bright",
+       name: "Orange-Red Bright",
        hex: "#fa3203",
     },
     {

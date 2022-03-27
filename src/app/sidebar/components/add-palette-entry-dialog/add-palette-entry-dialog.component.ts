@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Floss } from 'src/app/core/state/floss.model';
-import { DMCFlossList } from 'src/assets/DMCColourList';
+import { DMCFlossList } from 'src/assets/DMCFlossList';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
