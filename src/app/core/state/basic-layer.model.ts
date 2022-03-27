@@ -53,11 +53,39 @@ export class BasicLayer implements ILayer {
     }
   }
 
-  removeBackstitch(id: string): void {
-    var removeIdx = this.backstitches.findIndex(b => b.id == id);
-    if (removeIdx != -1) {
-      this.backstitches.splice(removeIdx);
+  removeBackstitch(clickedX: number, clickedY: number): number {
+    // Find all...
+
+    // todo: line length?
+    let tolerance = 1000;
+
+    let backstitchesToRemove = this.backstitches.filter(b => {
+      let lowX = Math.min(b.startX, b.endX);
+      let highX = Math.max(b.startX, b.endX);
+      let lowY = Math.min(b.startY, b.endY);
+      let highY = Math.max(b.startY, b.endY);
+
+      if (lowX < clickedX && clickedX < highX &&
+          lowY < clickedY && clickedY < highY) {
+          // (a, b), (m, n) (x, y) colinear if
+          // (n - b)(x - m) = (y - n)(m - a)
+          // (a: startX, b: startY), (m: endX, n: endY), (x: clickedX, y: clickedY)
+          let leftSide = (b.endY - b.startY) * (clickedX - b.endX);
+          let rightSide = (clickedY - b.endY) * (b.endX - b.startX);
+          let diff = Math.abs(leftSide - rightSide);
+
+          return diff < tolerance;
+      }
+      return false;
+    });
+
+    for (let bIdx = 0; bIdx < backstitchesToRemove.length; bIdx++) {
+      let b = backstitchesToRemove[bIdx];
+      let idx = this.backstitches.findIndex(b2 => b2.id == b.id);
+      this.backstitches.splice(idx, 1);
     }
+
+    return backstitchesToRemove.length;
   }
 
   // TODO: set partial stitch

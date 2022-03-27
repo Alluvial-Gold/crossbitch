@@ -48,4 +48,9 @@ export namespace Project {
     constructor(public line: BackstitchLine) {}
   }
 
+  export class RemoveLine {
+    static readonly type = '[Project] RemoveLine';
+    constructor(public clickedX: number, public clickedY: number) {}
+  }
+
 }

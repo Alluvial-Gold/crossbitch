@@ -189,7 +189,7 @@ export class ProjectState {
     ctx: StateContext<ProjectModel>,
     action: Project.UpdateLine
   ) {
-    // If current layer is basic layer, draw line
+    // If current layer is basic layer, update line
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
     
@@ -202,6 +202,31 @@ export class ProjectState {
       ctx.patchState({
         layers: newLayers
       });
+    }
+  }
+
+  @Action(Project.RemoveLine)
+  removeLine(
+    ctx: StateContext<ProjectModel>,
+    action: Project.RemoveLine
+  ) {
+    // If current layer is basic layer, remove line
+    let state = ctx.getState();
+    let currentLayer = state.layers[state.currentLayerIndex];
+    
+    if (currentLayer instanceof BasicLayer) {
+      let numRemoved = currentLayer.removeBackstitch(action.clickedX, action.clickedY);
+
+      if (numRemoved > 0) {
+        // TODO: figure out a nicer way to do this
+        let newLayers = state.layers;
+        newLayers[state.currentLayerIndex] = currentLayer;
+        ctx.patchState({
+          layers: newLayers
+        });
+      }
+
+
     }
   }
 }

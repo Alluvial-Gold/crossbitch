@@ -201,6 +201,21 @@ export class CanvasComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  // like get square, but no rounding/flooring
+  private getCanvasPoint(mouseX: number, mouseY: number): Point | null {
+    let xInCanvas = mouseX - this.transformX;
+    let yInCanvas = mouseY - this.transformY;
+    let xValue = xInCanvas / (SQUARE_SIZE * this.zoomFactor);
+    let yValue = yInCanvas / (SQUARE_SIZE * this.zoomFactor);
+
+    if (this.project && 
+        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
+        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+      return { x: xValue, y: yValue };
+    }
+    return null;
+  }
+
   private colourSquare(mouseX: number, mouseY: number, remove: boolean = false) {
     if (!this.project) {
       return;
@@ -268,6 +283,21 @@ export class CanvasComponent implements OnInit, OnDestroy {
     }
   }
 
+  private removeLine(mouseX: number, mouseY: number) {
+
+    if (!this.project) {
+      return;
+    }
+
+    let squareValue = this.getCanvasPoint(mouseX, mouseY);
+    if (squareValue) {
+      let x = squareValue.x * SQUARE_SIZE;
+      let y = squareValue.y * SQUARE_SIZE;
+
+      this.store.dispatch(new Project.RemoveLine(x, y))
+    }
+  }
+
   zoomToFit() {
     if (!this.project) {
       return;
@@ -313,8 +343,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
         if (this.currentTool == Tools.Draw) {
           this.startDrawingLine(e.offsetX, e.offsetY);
           this.isDrawDragging = true;
+        } else if (this.currentTool == Tools.Erase) {
+          this.removeLine(e.offsetX, e.offsetY);
         }
-        // TODO erase
       }
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag

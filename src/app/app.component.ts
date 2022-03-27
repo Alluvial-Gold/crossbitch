@@ -20,8 +20,6 @@ export class AppComponent implements OnInit {
     // Temporary - create new project
     this.store.dispatch(new Project.CreateProject(89, 94));
     this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
-    console.log(Tools.Draw);
     this.store.dispatch(new Settings.SelectTool(Tools.Draw));
-
   }
 }
