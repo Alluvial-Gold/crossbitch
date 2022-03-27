@@ -1,12 +1,10 @@
-// ???
-export enum ToolboxMode {
-  Fill,
-  Backstitch,
-  Remove,
-}
+import { Tools } from "src/app/toolbox/interfaces/tool.interface";
+import { ToolboxModes } from "src/app/toolbox/interfaces/toolbox-mode.interface";
 
 export interface SettingsModel {
 
-  currentToolboxMode: ToolboxMode;
+  currentToolboxMode: ToolboxModes;
+
+  currentTool: Tools;
 
 }

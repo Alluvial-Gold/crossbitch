@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Project } from './core/state/project.actions';
 import { Settings } from './core/state/settings.actions';
-import { ToolboxMode } from './core/state/settings.model';
+import { Tools } from './toolbox/interfaces/tool.interface';
+import { ToolboxModes } from './toolbox/interfaces/toolbox-mode.interface';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Temporary - create new project
     this.store.dispatch(new Project.CreateProject(89, 94));
-    this.store.dispatch(new Settings.SelectToolboxMode(ToolboxMode.Fill));
+    this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
+    console.log(Tools.Draw);
+    this.store.dispatch(new Settings.SelectTool(Tools.Draw));
 
   }
 }

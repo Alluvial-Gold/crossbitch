@@ -24,7 +24,7 @@ export class PaletteComponent implements OnInit, OnDestroy {
   currentColour$!: Observable<PaletteEntry>;
   currentColour?: PaletteEntry;
 
-  displayedColumns: string[] = [ 'symbol', 'name', 'strands'];
+  displayedColumns: string[] = [ 'symbol', 'name' ];
 
   constructor(
     public dialog: MatDialog,

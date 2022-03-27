@@ -5,9 +5,10 @@ import { SQUARE_SIZE } from 'src/app/core/constants';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
-import { ToolboxMode } from 'src/app/core/state/settings.model';
 import { SettingsState } from 'src/app/core/state/settings.state';
 import { BasicLayer } from 'src/app/core/state/basic-layer.model';
+import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
+import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
@@ -32,8 +33,12 @@ export class CanvasComponent implements OnInit, OnDestroy {
   project: ProjectModel | undefined;
 
   @Select(SettingsState.getCurrentToolboxMode)
-  currentMode$!: Observable<ToolboxMode>;
-  currentMode: ToolboxMode | undefined;
+  currentMode$!: Observable<ToolboxModes>;
+  currentMode: ToolboxModes | undefined;
+
+  @Select(SettingsState.getCurrentTool)
+  currentTool$!: Observable<Tools>;
+  currentTool: Tools | undefined;
 
   @ViewChild('mainCanvas', {static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -91,7 +96,13 @@ export class CanvasComponent implements OnInit, OnDestroy {
       this.currentMode$.subscribe((currentMode) => {
         this.currentMode = currentMode;
       })
-    )
+    );
+
+    this.sub.add(
+      this.currentTool$.subscribe((currentTool) => {
+        this.currentTool = currentTool;
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -226,11 +237,12 @@ export class CanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: Event) {
     if (e instanceof MouseEvent && e.button == 0) {
       // Right mouse button to do things
-      if (this.currentMode == ToolboxMode.Fill || this.currentMode == ToolboxMode.Remove) {
-        this.colourSquare(e.offsetX, e.offsetY, this.currentMode == ToolboxMode.Remove);
-        this.isDrawDragging = true;
+      if (this.currentMode == ToolboxModes.Crossstitch) {
+        if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
+          this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
+          this.isDrawDragging = true;
+        }
       }
-
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
       this.isPanDragging = true;
@@ -248,8 +260,10 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
       this.applyTransform();
     } else if (this.isDrawDragging && e instanceof MouseEvent) {
-      if (this.currentMode == ToolboxMode.Fill || this.currentMode == ToolboxMode.Remove) {
-        this.colourSquare(e.offsetX, e.offsetY, this.currentMode == ToolboxMode.Remove);
+      if (this.currentMode == ToolboxModes.Crossstitch) {
+        if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
+          this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
+        }
       }
     }
   }
