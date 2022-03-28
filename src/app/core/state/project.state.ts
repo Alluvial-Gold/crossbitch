@@ -83,6 +83,14 @@ export class ProjectState {
     });
   }
 
+  @Action(Project.ImportProject)
+  importProject(
+    ctx: StateContext<ProjectModel>,
+    action: Project.ImportProject
+  ) {
+    ctx.patchState(action.project);
+  }
+
   @Action(Project.SelectLayer)
   selectLayer(
     ctx: StateContext<ProjectModel>,

@@ -1,11 +1,17 @@
 import { BackstitchLine } from "./basic-layer.model";
 import { PaletteEntry } from "./palette-entry.model";
+import { ProjectModel } from "./project.model";
 
 export namespace Project {
 
   export class CreateProject {
     static readonly type = '[Project] CreateProject';
     constructor(public rows: number, public columns: number) {}
+  }
+
+  export class ImportProject {
+    static readonly type = '[Project] ImportProject';
+    constructor(public project: ProjectModel) {}
   }
 
   // Add layer
