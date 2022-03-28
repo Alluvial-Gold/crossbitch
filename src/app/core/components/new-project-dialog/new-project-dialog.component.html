@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Create new project</h1>
+
+<div mat-dialog-content>
+
+  <form class="example-form" [formGroup]="newProjectForm">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Width</mat-label>
+      <input matInput type="number" min="1" max="1000" formControlName="width">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Height</mat-label>
+      <input matInput type="number" min="1" max="1000" formControlName="height">
+    </mat-form-field>
+  </form>
+
+
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button [mat-dialog-close]>Cancel</button>
+  <button mat-raised-button color="primary" (click)="submitForm()" [disabled]="newProjectForm.invalid">Ok</button>
+</div>

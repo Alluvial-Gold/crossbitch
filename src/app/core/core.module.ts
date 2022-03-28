@@ -5,16 +5,21 @@ import { MaterialModule } from '../material.module';
 import { NgxsModule } from '@ngxs/store';
 import { ProjectState } from './state/project.state';
 import { SettingsState } from './state/settings.state';
+import { NewProjectDialogComponent } from './components/new-project-dialog/new-project-dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
 @NgModule({
   declarations: [
-    ToolbarComponent
+    ToolbarComponent,
+    NewProjectDialogComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
     NgxsModule.forFeature([ProjectState, SettingsState])
   ],
   exports: [

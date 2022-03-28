@@ -1,11 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { PaletteComponent } from 'src/app/sidebar/components/palette/palette.component';
+import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
+import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
 import { BasicLayer } from '../../state/basic-layer.model';
 import { Project } from '../../state/project.actions';
 import { ProjectModel } from '../../state/project.model';
 import { ProjectState } from '../../state/project.state';
+import { Settings } from '../../state/settings.actions';
+import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
 
 @Component({
   selector: 'app-toolbar',
@@ -25,6 +30,7 @@ export class ToolbarComponent implements OnInit {
 
   constructor(
     private store: Store,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +39,23 @@ export class ToolbarComponent implements OnInit {
         this.project = value;
       })
     )
+  }
+
+  createNewProject() {
+    console.log('new project...');
+
+    // Open project dialog...
+    const dialogRef = this.dialog.open(NewProjectDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(new Project.CreateProject(result.width, result.height));
+        this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
+        this.store.dispatch(new Settings.SelectTool(Tools.Draw));
+      }
+    })
   }
 
   exportProject() {

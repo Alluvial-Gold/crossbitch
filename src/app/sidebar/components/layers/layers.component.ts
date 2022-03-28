@@ -38,6 +38,10 @@ export class LayersComponent implements OnInit {
   ngOnInit(): void {
     this.sub.add(
       this.layers$.subscribe((layers) => {
+        if (!layers || layers.length <= 0) {
+          return;
+        }
+
         this.layers = layers.map((l) => ({
           name: l.name,
           type: this.getType(l)

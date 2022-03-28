@@ -9,6 +9,7 @@ import { SettingsState } from 'src/app/core/state/settings.state';
 import { BackstitchLine, BasicLayer } from 'src/app/core/state/basic-layer.model';
 import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
 import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
+import { filter } from 'rxjs/operators';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
@@ -89,9 +90,22 @@ export class CanvasComponent implements OnInit, OnDestroy {
     }
     
     this.sub.add(
-      this.project$.subscribe((project) => {
-        this.project = project;
-        this.redraw();
+      this.project$
+        .pipe(
+          filter(x => Object.keys(x).length > 0) // ignore if empty
+        )
+        .subscribe((project) => {
+          let zoom = !this.project;
+
+          this.project = project;
+          this.redraw();
+
+          // todo - improve
+          // zoom to fit when new project is loaded
+          if (zoom) {
+            this.zoomToFit();
+          }
+          
       })
     )
 

@@ -7,10 +7,11 @@
       <!-- menus... -->
       <button mat-button [matMenuTriggerFor]="file">File</button>
       <mat-menu #file="matMenu">
-        <button mat-menu-item>New...</button>
+        <button mat-menu-item (click)="createNewProject()">New...</button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="exportProject()">Export</button>
         <button mat-menu-item (click)="openImport()">
-          Import
+          Import...
           <input #import type="file" style="display:none" (change)="importProject($event)">
         </button>
       </mat-menu>
