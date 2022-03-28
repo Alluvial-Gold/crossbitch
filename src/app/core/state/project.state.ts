@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
 import { CanvasSettings } from "./canvas-settings.model";
 import { ILayer } from "./ilayer.interface";
 import { PaletteEntry } from "./palette-entry.model";
-import { BackstitchLine, BasicLayer } from "./basic-layer.model";
+import { BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
@@ -132,6 +132,40 @@ export class ProjectState {
 
     ctx.patchState({
       palette: newPalette
+    });
+  }
+
+  @Action(Project.DeletePaletteEntry)
+  deletePaletteEntry(
+    ctx: StateContext<ProjectModel>,
+    action: Project.DeletePaletteEntry
+  ) {
+    let state = ctx.getState();
+
+    // 1. create palette map: map old index to new index
+    let paletteMap = new Map<number, number>();
+    let afterDeletion = false;
+    for (let i = 0; i < state.palette.length; i++) {
+      if (i == action.indexToRemove) {
+        afterDeletion = true;
+      }
+      let newIdx = i == action.indexToRemove ? (action.replaceIndex > action.indexToRemove ? action.replaceIndex - 1 : action.replaceIndex) :
+        afterDeletion ? i - 1 : i;
+      paletteMap.set(i, newIdx);
+    }
+
+    let layers = state.layers;
+    layers.forEach(layer => {
+      if (layer instanceof BasicLayer) {
+        layer.updatePalette(paletteMap);
+      }
+    })
+
+    state.palette.splice(action.indexToRemove, 1);
+
+    ctx.patchState({
+      palette: state.palette,
+      layers: layers
     });
   }
 

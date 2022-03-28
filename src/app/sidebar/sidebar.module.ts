@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxsModule } from '@ngxs/store';
 import { ProjectState } from '../core/state/project.state';
+import { DeletePaletteEntryDialogComponent } from './components/delete-palette-entry-dialog/delete-palette-entry-dialog.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ProjectState } from '../core/state/project.state';
     PaletteComponent,
     LayersComponent,
     AddPaletteEntryDialogComponent,
+    DeletePaletteEntryDialogComponent,
   ],
   imports: [
     CommonModule,

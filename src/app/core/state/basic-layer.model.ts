@@ -88,6 +88,33 @@ export class BasicLayer implements ILayer {
     return backstitchesToRemove.length;
   }
 
+  updatePalette(paletteMap: Map<number, number>) {
+    // cross stitch
+    for (let rowIdx = 0; rowIdx < this.crossstitches.length; rowIdx++) {
+      for (let colIdx = 0; colIdx < this.crossstitches[0].length; colIdx++) {
+        let value = this.crossstitches[rowIdx][colIdx];
+
+        if (value != -1) {
+          if (typeof value === 'number') {
+            this.crossstitches[rowIdx][colIdx] = paletteMap.get(value)!;
+          } else {
+            // TODO - partial square
+            for (let valIdx = 0; valIdx < value.length; valIdx++) {
+              let val2 = value[valIdx];
+              (this.crossstitches[rowIdx][colIdx] as number[])[valIdx] = paletteMap.get(val2)!;
+            }
+          }
+        }
+      }
+    }
+
+    // backstitch
+    this.backstitches = this.backstitches.map(b => {
+      b.paletteIdx = paletteMap.get(b.paletteIdx)!;
+      return b;
+    }).filter(b => b.paletteIdx != -1);
+  }
+
   // TODO: set partial stitch
 
   drawCrossstitchLayer(ctx: CanvasRenderingContext2D, palette: PaletteEntry[]): void {

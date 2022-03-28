@@ -6,6 +6,7 @@ import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { AddPaletteEntryDialogComponent } from '../add-palette-entry-dialog/add-palette-entry-dialog.component';
+import { DeletePaletteEntryDialogComponent } from '../delete-palette-entry-dialog/delete-palette-entry-dialog.component';
 
 @Component({
   selector: 'app-palette',
@@ -70,6 +71,24 @@ export class PaletteComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.store.dispatch(new Project.UpdateCurrentPaletteEntry(result));
+      }
+    })
+  }
+
+  openDeleteDialog(): void {
+    const dialogRef = this.dialog.open(DeletePaletteEntryDialogComponent, {
+      width: '400px',
+      data: {
+        // TODO make this an interface
+        currentColour: this.currentColour,
+        palette: this.palette
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        let currentIndex = this.palette.findIndex(e => e.floss.description === this.currentColour?.floss.description)
+        this.store.dispatch(new Project.DeletePaletteEntry(currentIndex, result.paletteIndex));
       }
     })
   }

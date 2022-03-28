@@ -14,6 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
 
@@ -32,6 +33,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSelectModule,
   ],
   exports: [
     MatToolbarModule,
@@ -48,6 +50,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSelectModule,
   ]
 })
 export class MaterialModule { }

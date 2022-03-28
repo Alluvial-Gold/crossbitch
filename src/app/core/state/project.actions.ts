@@ -33,6 +33,11 @@ export namespace Project {
     constructor(public paletteEntry: PaletteEntry) {}
   }
 
+  export class DeletePaletteEntry {
+    static readonly type = '[Project] DeletePaletteEntry';
+    constructor(public indexToRemove: number, public replaceIndex: number) {}
+  }
+
   export class SelectPaletteColour {
     static readonly type = '[Project] SelectPaletteColour';
     constructor(public paletteEntry: PaletteEntry) {}
