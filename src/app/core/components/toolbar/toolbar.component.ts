@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { PaletteComponent } from 'src/app/sidebar/components/palette/palette.component';
 import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
+import { ExportPdfService } from '../../services/export-pdf.service';
 import { BasicLayer } from '../../state/basic-layer.model';
 import { Project } from '../../state/project.actions';
 import { ProjectModel } from '../../state/project.model';
@@ -31,6 +32,7 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private store: Store,
     public dialog: MatDialog,
+    private exportPdfService: ExportPdfService
   ) { }
 
   ngOnInit(): void {
@@ -108,6 +110,10 @@ export class ToolbarComponent implements OnInit {
       // Import project
       this.store.dispatch(new Project.ImportProject(projectToImport));
     }
+  }
+
+  exportPdf() {
+    this.exportPdfService.export(this.project!);
   }
 
 }
