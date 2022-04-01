@@ -11,6 +11,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxsModule } from '@ngxs/store';
 import { ProjectState } from '../core/state/project.state';
 import { DeletePaletteEntryDialogComponent } from './components/delete-palette-entry-dialog/delete-palette-entry-dialog.component';
+import { IconPipe } from './pipes/icon.pipe';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { DeletePaletteEntryDialogComponent } from './components/delete-palette-e
     LayersComponent,
     AddPaletteEntryDialogComponent,
     DeletePaletteEntryDialogComponent,
+    IconPipe,
   ],
   imports: [
     CommonModule,

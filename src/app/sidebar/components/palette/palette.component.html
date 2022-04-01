@@ -6,7 +6,9 @@
     <td mat-cell *matCellDef="let element">
       <!-- TODO - make this a component -->
       <div style="width: 20px; height: 20px;" [style.background-color]="element.floss.colour" fxLayoutAlign="center center">
-        {{ element.symbol.value }}
+        <svg viewBox="0 0 100 100" width="20px" height="20px">
+          <path [attr.d]="element.iconIndex | icon" />
+        </svg>
       </div>
     </td>
   </ng-container>

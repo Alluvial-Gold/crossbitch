@@ -6,6 +6,7 @@ import { DMCFlossList } from 'src/assets/DMCFlossList';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
+import { Icon, Icons } from 'src/app/shared/icons.constants';
 
 @Component({
   selector: 'app-add-palette-entry-dialog',
@@ -16,7 +17,7 @@ export class AddPaletteEntryDialogComponent implements OnInit {
 
   paletteEntryForm = new FormGroup({
     floss: new FormControl('', [Validators.required]),
-    symbol: new FormControl('a', [Validators.required, Validators.minLength(1), Validators.maxLength(1),]),
+    iconIndex: new FormControl('', [Validators.required]),
     strands: new FormControl(2, [Validators.required, Validators.min(1), Validators.max(10)])
   })
 
@@ -28,6 +29,8 @@ export class AddPaletteEntryDialogComponent implements OnInit {
     }
   });
   filteredFlosses: Observable<Floss[]>;
+
+  icons: Icon[] = Icons;
 
   isEditMode = false;
 
@@ -41,7 +44,7 @@ export class AddPaletteEntryDialogComponent implements OnInit {
       // Populate data...
       this.paletteEntryForm.patchValue({
         floss: data.floss,
-        symbol: data.symbol.value,
+        iconIndex: data.iconIndex,
         strands: data.strands
       })
     }
@@ -74,7 +77,7 @@ export class AddPaletteEntryDialogComponent implements OnInit {
     // Make palette entry
     let paletteEntry: PaletteEntry = {
       floss: this.paletteEntryForm.controls['floss'].value,
-      symbol: { value: this.paletteEntryForm.controls['symbol'].value },
+      iconIndex: this.paletteEntryForm.controls['iconIndex'].value,
       strands: this.paletteEntryForm.controls['strands'].value,
     };
 

@@ -20,9 +20,17 @@
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Symbol</mat-label>
-      <input matInput formControlName="symbol">
-      <mat-error>Symbol must be one character</mat-error>
+      <mat-label>Icon</mat-label>
+      <mat-select formControlName="iconIndex">
+        <mat-option *ngFor="let icon of icons; let i = index" [value]="i">
+          <div fxLayoutAlign="start center" fxLayoutGap="10px ">
+            <svg viewBox="0 0 100 100" height="20px" width="20px">
+              <path [attr.d]="icon.path" style="fill: white" />
+            </svg>
+            <p class="icon-name">{{icon.name}}</p>
+          </div>
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="fill">

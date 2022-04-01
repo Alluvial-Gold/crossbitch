@@ -1,12 +1,11 @@
 import { Floss } from "./floss.model";
-import { PatternSymbol } from "./pattern-symbol.model";
 
 export interface PaletteEntry {
 
   floss: Floss;
 
   // Cross stitch options
-  symbol: PatternSymbol;
+  iconIndex: number;
   strands: number;
 
   // TODO: back stitch options

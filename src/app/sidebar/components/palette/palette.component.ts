@@ -52,7 +52,8 @@ export class PaletteComponent implements OnInit, OnDestroy {
 
   openAddDialog(): void {
     const dialogRef = this.dialog.open(AddPaletteEntryDialogComponent, {
-      width: '400px'
+      width: '400px',
+      autoFocus: false,
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -65,6 +66,7 @@ export class PaletteComponent implements OnInit, OnDestroy {
   openEditDialog(): void {
     const dialogRef = this.dialog.open(AddPaletteEntryDialogComponent, {
       width: '400px',
+      autoFocus: false,
       data: this.currentColour,
     });
 

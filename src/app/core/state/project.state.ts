@@ -7,6 +7,7 @@ import { BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
+import { Icons } from "src/app/shared/icons.constants";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
@@ -62,14 +63,14 @@ export class ProjectState {
 
     // Sample palette
     let dmcColours = ["552", "553", "209", "164", "989"];
-    let samplePalette: PaletteEntry[] = dmcColours.map((c) => {
+    let samplePalette: PaletteEntry[] = dmcColours.map((c, i) => {
       let floss = DMCFlossList.find((f) => f.number == c);
       return {
         floss: {
           description: floss ? `DMC ${floss.number} ${floss.name}` : '???',
           colour: floss ? floss.hex : '#000000'
         },
-        symbol: { value: 'a' },
+        iconIndex: i,
         strands: 2
       }
     });
