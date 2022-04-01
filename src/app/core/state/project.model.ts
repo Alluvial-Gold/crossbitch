@@ -4,6 +4,8 @@ import { PaletteEntry } from "../state/palette-entry.model";
 
 export interface ProjectModel {
 
+  name: string;
+
   canvasSettings: CanvasSettings;
 
   layers: ILayer[];

@@ -75,6 +75,7 @@ export class ProjectState {
     });
 
     ctx.patchState({
+      name: action.name,
       canvasSettings: settings,
       layers: layers,
       currentLayerIndex: 0,

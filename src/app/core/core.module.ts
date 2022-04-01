@@ -7,6 +7,7 @@ import { ProjectState } from './state/project.state';
 import { SettingsState } from './state/settings.state';
 import { NewProjectDialogComponent } from './components/new-project-dialog/new-project-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 
@@ -20,6 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    FlexLayoutModule,
     NgxsModule.forFeature([ProjectState, SettingsState])
   ],
   exports: [

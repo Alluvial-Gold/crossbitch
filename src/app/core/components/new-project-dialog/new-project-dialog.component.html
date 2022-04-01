@@ -2,18 +2,25 @@
 
 <div mat-dialog-content>
 
-  <form class="example-form" [formGroup]="newProjectForm">
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Width</mat-label>
-      <input matInput type="number" min="1" max="1000" formControlName="width">
+  <form [formGroup]="newProjectForm">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" formControlName="name">
     </mat-form-field>
 
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Height</mat-label>
-      <input matInput type="number" min="1" max="1000" formControlName="height">
-    </mat-form-field>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-form-field fxFlex="45" appearance="fill">
+        <mat-label>Width</mat-label>
+        <input matInput type="number" min="1" max="1000" formControlName="width">
+      </mat-form-field>
+      <div fxFlex></div>
+      <mat-form-field fxFlex="45" appearance="fill">
+        <mat-label>Height</mat-label>
+        <input matInput type="number" min="1" max="1000" formControlName="height">
+      </mat-form-field>
+    </div>
+
   </form>
-
 
 </div>
 <div mat-dialog-actions align="end">

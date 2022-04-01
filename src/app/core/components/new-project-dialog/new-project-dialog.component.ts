@@ -10,6 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class NewProjectDialogComponent implements OnInit {
 
   newProjectForm = new FormGroup({
+    name: new FormControl('', [Validators.required]),
     width: new FormControl(20, [Validators.required, Validators.min(1), Validators.max(1000)]),
     height: new FormControl(20, [Validators.required, Validators.min(1), Validators.max(1000)])
   })
@@ -22,8 +23,9 @@ export class NewProjectDialogComponent implements OnInit {
   }
 
   submitForm() {
-    // Make palette entry
+    // TODO make interface
     let result = {
+      name: this.newProjectForm.controls['name'].value,
       width: this.newProjectForm.controls['width'].value,
       height: this.newProjectForm.controls['height'].value
     };

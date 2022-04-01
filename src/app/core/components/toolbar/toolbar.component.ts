@@ -44,8 +44,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   createNewProject() {
-    console.log('new project...');
-
     // Open project dialog...
     const dialogRef = this.dialog.open(NewProjectDialogComponent, {
       width: '400px'
@@ -53,7 +51,7 @@ export class ToolbarComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(new Project.CreateProject(result.width, result.height));
+        this.store.dispatch(new Project.CreateProject(result.name, result.width, result.height));
         this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
         this.store.dispatch(new Settings.SelectTool(Tools.Draw));
       }
