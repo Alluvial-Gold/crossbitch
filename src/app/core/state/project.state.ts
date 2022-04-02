@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
-import { CanvasSettings } from "./canvas-settings.model";
+import { FabricSettings } from "./fabric-settings.model";
 import { ILayer } from "./ilayer.interface";
 import { PaletteEntry } from "./palette-entry.model";
 import { BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
-import { Icons } from "src/app/shared/icons.constants";
+import { ICONS } from "src/app/shared/constants/icons.constants";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
@@ -51,10 +51,10 @@ export class ProjectState {
     action: Project.CreateProject
   ) {
     
-    let settings: CanvasSettings = {
+    let settings: FabricSettings = {
       rows: action.rows,
       columns: action.columns,
-      backgroundColour: 'white' 
+      colour: action.colour, 
     };
 
     // Start with single layer
@@ -79,7 +79,7 @@ export class ProjectState {
 
     ctx.patchState({
       name: action.name,
-      canvasSettings: settings,
+      fabricSettings: settings,
       layers: layers,
       currentLayerIndex: 0,
       palette: samplePalette,

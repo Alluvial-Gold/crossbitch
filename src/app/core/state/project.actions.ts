@@ -6,7 +6,7 @@ export namespace Project {
 
   export class CreateProject {
     static readonly type = '[Project] CreateProject';
-    constructor(public name: string, public rows: number, public columns: number) {}
+    constructor(public name: string, public colour: string, public rows: number, public columns: number) {}
   }
 
   export class ImportProject {

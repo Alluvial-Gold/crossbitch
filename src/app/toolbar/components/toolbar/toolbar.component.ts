@@ -52,7 +52,7 @@ export class ToolbarComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(new Project.CreateProject(result.name, result.width, result.height));
+        this.store.dispatch(new Project.CreateProject(result.name, result.fabricColour, result.width, result.height));
         this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
         this.store.dispatch(new Settings.SelectTool(Tools.Draw));
       }

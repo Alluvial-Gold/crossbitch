@@ -6,8 +6,8 @@ import { DMCFlossList } from 'src/assets/DMCFlossList';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PaletteEntry } from 'src/app/core/state/palette-entry.model';
-import { Icon, Icons } from 'src/app/shared/icons.constants';
-import { Line, Lines } from 'src/app/shared/lines.constants';
+import { Icon, ICONS } from 'src/app/shared/constants/icons.constants';
+import { Line, LINES } from 'src/app/shared/constants/lines.constants';
 
 @Component({
   selector: 'app-add-palette-entry-dialog',
@@ -33,8 +33,8 @@ export class AddPaletteEntryDialogComponent implements OnInit {
   });
   filteredFlosses: Observable<Floss[]>;
 
-  icons: Icon[] = Icons;
-  lines: Line[] = Lines;
+  icons: Icon[] = ICONS;
+  lines: Line[] = LINES;
 
   isEditMode = false;
 

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Icons } from 'src/app/shared/icons.constants';
+import { ICONS } from 'src/app/shared/constants/icons.constants';
 
 @Pipe({
   name: 'icon'
@@ -7,7 +7,7 @@ import { Icons } from 'src/app/shared/icons.constants';
 export class IconPipe implements PipeTransform {
 
   transform(value: number): unknown {
-    return Icons[value].path
+    return ICONS[value].path
   }
 
 }

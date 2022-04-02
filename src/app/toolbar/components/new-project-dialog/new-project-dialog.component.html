@@ -8,6 +8,20 @@
       <input matInput type="text" formControlName="name">
     </mat-form-field>
 
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Fabric colour</mat-label>
+      <mat-select formControlName="fabricColour">
+        <mat-select-trigger>
+          <div *ngIf="selectedColour" style="width: 100%; height: 10px" [style.background-color]="selectedColour">
+          </div>
+        </mat-select-trigger>
+        <mat-option *ngFor="let colour of colours" [value]="colour">
+          <div *ngIf="colour" style="width: 100%; height: 10px" [style.background-color]="colour">
+          </div>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <div fxLayout="row" fxLayoutAlign="center center">
       <mat-form-field fxFlex="45" appearance="fill">
         <mat-label>Width</mat-label>

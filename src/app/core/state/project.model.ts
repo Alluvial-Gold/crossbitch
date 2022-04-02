@@ -1,4 +1,4 @@
-import { CanvasSettings } from "./canvas-settings.model";
+import { FabricSettings } from "./fabric-settings.model";
 import { ILayer } from "../state/ilayer.interface";
 import { PaletteEntry } from "../state/palette-entry.model";
 
@@ -6,7 +6,7 @@ export interface ProjectModel {
 
   name: string;
 
-  canvasSettings: CanvasSettings;
+  fabricSettings: FabricSettings;
 
   layers: ILayer[];
   currentLayerIndex: number;

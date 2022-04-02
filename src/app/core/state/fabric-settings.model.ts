@@ -1,8 +1,8 @@
 /**
  * Settings that apply to the whole canvas
  */
- export interface CanvasSettings {
+ export interface FabricSettings {
   rows: number;
   columns: number;
-  backgroundColour: string;
+  colour: string;
 }

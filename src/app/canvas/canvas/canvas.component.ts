@@ -156,30 +156,25 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     this.clear();
 
-    let width = this.project.canvasSettings.columns * SQUARE_SIZE;
-    let height = this.project.canvasSettings.rows * SQUARE_SIZE;
+    let width = this.project.fabricSettings.columns * SQUARE_SIZE;
+    let height = this.project.fabricSettings.rows * SQUARE_SIZE;
 
-    // 1. Draw background
-    this.ctx.fillStyle = 'white';
+    // Background
+    this.ctx.fillStyle = this.project.fabricSettings.colour;
     this.ctx.fillRect(0, 0, width, height);
 
-    // 2. Draw cross stitch layers
+    // Cross stitch layers
     for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
       this.project.layers[layerIdx].drawCrossstitchLayer(this.ctx, this.project.palette);
     }
 
-    // 3. Draw lines on top
+    // Grid lines
     this.drawGridLines(width, height);
 
-    // 4. Draw back stitch layers
+    // Backstitch layers
     for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
       this.project.layers[layerIdx].drawBackstitchLayer(this.ctx, this.project.palette);
     }
-
-    // 5.  Draw text for lines outside of box
-    // TODO - later
-
-    // 6. Draw center line - later
   }
 
   private drawGridLines(width: number, height: number) {
@@ -194,8 +189,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     let yValue = Math.floor(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
 
     if (this.project && 
-        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
-        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
+        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
       return { x: xValue, y: yValue };
     }
     return null;
@@ -208,8 +203,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     let yValue = Math.round(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
 
     if (this.project && 
-        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
-        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
+        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
       return { x: xValue, y: yValue };
     }
     return null;
@@ -223,8 +218,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     let yValue = yInCanvas / (SQUARE_SIZE * this.zoomFactor);
 
     if (this.project && 
-        xValue >= 0 && xValue < this.project.canvasSettings.columns && 
-        yValue >= 0 && yValue < this.project.canvasSettings.rows) {
+        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
+        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
       return { x: xValue, y: yValue };
     }
     return null;
@@ -320,8 +315,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
     let zoomMargin = 20 * SQUARE_SIZE;
 
     // Size 1
-    let width = this.project.canvasSettings.columns * SQUARE_SIZE;
-    let height = this.project.canvasSettings.rows * SQUARE_SIZE;
+    let width = this.project.fabricSettings.columns * SQUARE_SIZE;
+    let height = this.project.fabricSettings.rows * SQUARE_SIZE;
 
     let widthWithMargin = width + zoomMargin;
     let heightWithMargin = height + zoomMargin;
@@ -419,8 +414,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   private applyTransform() {
-    //console.log(`${this.zoomFactor}, ${this.transformX}, ${this.transformY}`);
-
     this.ctx.setTransform(this.zoomFactor, 0, 0, this.zoomFactor, this.transformX, this.transformY);
     this.redraw();
   }

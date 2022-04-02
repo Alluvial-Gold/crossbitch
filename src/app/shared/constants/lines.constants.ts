@@ -3,7 +3,7 @@ export interface Line {
   thickness: number;
 }
 
-export const Lines: Line[] = [
+export const LINES: Line[] = [
   {
     name: 'regular',
     thickness: 1,

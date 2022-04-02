@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ProjectModel } from '../state/project.model';
 import { PDFDocument, StandardFonts, rgb, PDFPage, RGB, RotationTypes, PDFFont } from 'pdf-lib'
 import { BasicLayer } from '../state/basic-layer.model';
-import { Icons } from 'src/app/shared/icons.constants';
-import { Lines } from 'src/app/shared/lines.constants';
+import { ICONS } from 'src/app/shared/constants/icons.constants';
+import { LINES } from 'src/app/shared/constants/lines.constants';
 import { DownloadService } from 'src/app/shared/services/download.service';
 
 interface ExportSettings {
@@ -65,7 +65,7 @@ export class ExportPdfService {
       x: startX,
       font: settings.boldFont,
     });
-    page.drawText(`${project.canvasSettings.rows}W x ${project.canvasSettings.columns}H`, {
+    page.drawText(`${project.fabricSettings.rows}W x ${project.fabricSettings.columns}H`, {
       x: 200,
       font: settings.font,
     });
@@ -97,7 +97,7 @@ export class ExportPdfService {
       })
 
       // Draw symbol
-      let icons = Icons;
+      let icons = ICONS;
       page.drawSvgPath(
         icons[paletteEntry.iconIndex].path,
         {
@@ -148,7 +148,7 @@ export class ExportPdfService {
     });
 
     // Palette icon map
-    let icons = Icons;
+    let icons = ICONS;
     let iconMap = new Map<number, string>();
     project.palette.forEach((p, i) => {
       let iconPath = icons[p.iconIndex].path;
@@ -156,7 +156,7 @@ export class ExportPdfService {
     });
 
     // Palette backstitch line map
-    let lines = Lines;
+    let lines = LINES;
     let lineMap = new Map<number, number>();
     project.palette.forEach((p, i) => {
       let thickness = lines[p.lineIndex].thickness;
@@ -198,10 +198,10 @@ export class ExportPdfService {
     }
 
     // Grid
-    let gridWidth = project.canvasSettings.columns * squareSize;
-    let gridHeight = project.canvasSettings.rows * squareSize;
+    let gridWidth = project.fabricSettings.columns * squareSize;
+    let gridHeight = project.fabricSettings.rows * squareSize;
 
-    for (let x = 0; x < project.canvasSettings.columns + 1; x++) {
+    for (let x = 0; x < project.fabricSettings.columns + 1; x++) {
       page.drawLine({
         start: {
           x: startX + x * squareSize,
@@ -216,7 +216,7 @@ export class ExportPdfService {
       })
     }
 
-    for (let y = 0; y < project.canvasSettings.rows + 1; y++) {
+    for (let y = 0; y < project.fabricSettings.rows + 1; y++) {
       page.drawLine({
         start: {
           x: startX,
@@ -255,14 +255,14 @@ export class ExportPdfService {
     page.setFontSize(10);
     page.setFont(settings.font);
 
-    for (let x = 10; x < project.canvasSettings.columns + 1; x += 10) {
+    for (let x = 10; x < project.fabricSettings.columns + 1; x += 10) {
       page.drawText(x.toString(), {
         x: startX + x * squareSize - 5,
         y: startY + 5,
       });
     }
 
-    for (let y = 10; y < project.canvasSettings.rows + 1; y += 10) {
+    for (let y = 10; y < project.fabricSettings.rows + 1; y += 10) {
       page.drawText(y.toString(), {
         x: startX - 5,
         y: startY - y * squareSize - 5,

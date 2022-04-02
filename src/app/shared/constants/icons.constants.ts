@@ -3,7 +3,7 @@ export interface Icon {
   path: string;
 }
 
-export const Icons: Icon[] = [
+export const ICONS: Icon[] = [
   {
     name: 'circle',
     path: 'M 10 50 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0'
