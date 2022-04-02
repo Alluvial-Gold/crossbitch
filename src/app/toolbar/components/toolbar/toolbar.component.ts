@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { PaletteComponent } from 'src/app/sidebar/components/palette/palette.component';
+import { DownloadService } from 'src/app/shared/services/download.service';
 import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
 import { ExportPdfService } from '../../../core/services/export-pdf.service';
@@ -32,7 +32,8 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private store: Store,
     public dialog: MatDialog,
-    private exportPdfService: ExportPdfService
+    private exportPdfService: ExportPdfService,
+    private downloadService: DownloadService,
   ) { }
 
   ngOnInit(): void {
@@ -62,16 +63,7 @@ export class ToolbarComponent implements OnInit {
     if (!this.project) {
       return;
     }
-
-    const blob = new Blob([JSON.stringify(this.project)], { type: 'application/json' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = "project.bitch";
-    link.click();
-
-    link.remove();
-    window.URL.revokeObjectURL(url);
+    this.downloadService.downloadJson(JSON.stringify(this.project), `${this.project.name}.bitch`);
   }
 
   openImport() {

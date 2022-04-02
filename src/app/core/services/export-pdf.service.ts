@@ -1,85 +1,84 @@
 import { Injectable } from '@angular/core';
 import { ProjectModel } from '../state/project.model';
-import { PDFDocument, StandardFonts, rgb, PDFPage, grayscale, RGB, RotationTypes } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb, PDFPage, RGB, RotationTypes, PDFFont } from 'pdf-lib'
 import { BasicLayer } from '../state/basic-layer.model';
 import { Icons } from 'src/app/shared/icons.constants';
 import { Lines } from 'src/app/shared/lines.constants';
+import { DownloadService } from 'src/app/shared/services/download.service';
+
+interface ExportSettings {
+  font: PDFFont,
+  boldFont: PDFFont
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExportPdfService {
 
-  constructor() { }
+  constructor(
+    private downloadService: DownloadService
+  ) { }
 
   async export(project: ProjectModel) {
-    const pdfDoc = await PDFDocument.create()
-    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+    const pdfDoc = await PDFDocument.create();
+
+    const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const boldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+    const settings: ExportSettings = {
+      font: font,
+      boldFont: boldFont
+    };
   
-    const page = pdfDoc.addPage()
-    await this.createFrontPage(project, page, timesRomanFont, timesRomanBoldFont);
+    // Front page
+    await this.createFrontPage(project, pdfDoc, settings);
 
-    this.drawPattern(project, pdfDoc, timesRomanFont);
+    // Pattern
+    this.drawPattern(project, pdfDoc, settings);
 
-    const pdfBytes = await pdfDoc.save()
-    this.export2(pdfBytes);
+    // Download
+    const pdfBytes = await pdfDoc.save();
+    const name = `${project.name} export.pdf`
+    this.downloadService.downloadPdf(pdfBytes, name);
   }
 
-  // TODO put this somewhere else
-  private export2(pdfBytes: Uint8Array) {
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = "export.pdf";
-    link.click();
+  private async createFrontPage(project: ProjectModel, pdfDoc: PDFDocument, settings: ExportSettings) {
+    const page = pdfDoc.addPage();
+    const { height } = page.getSize();
 
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private async createFrontPage(project: ProjectModel, page: PDFPage, font: any, boldFont: any) {
-    const { width, height } = page.getSize();
+    const startX = 50;
+    const titleFontSize = 30;
+    const smallFontSize = 12;
 
     // Project name
-    let titleFontSize = 30;
+    page.moveTo(startX, height - 2 * titleFontSize);
     page.drawText(project.name, {
-      x: 50,
-      y: height - 2 * titleFontSize,
       size: titleFontSize,
-      font: font,
+      font: settings.font,
     })
 
-    // Project size
-    let yDelta = 100;
+    page.setFontSize(smallFontSize);
 
-    let smallFontSize = 12;
+    // Project details
+    page.moveDown(50);
     page.drawText('Grid Size:', {
-      x: 50,
-      y: height - yDelta,
-      size: smallFontSize,
-      font: boldFont,
+      x: startX,
+      font: settings.boldFont,
     });
     page.drawText(`${project.canvasSettings.rows}W x ${project.canvasSettings.columns}H`, {
       x: 200,
-      y: height - yDelta,
-      size: smallFontSize,
-      font: font,
+      font: settings.font,
     });
 
     // Palette - cross stitch
-    page.moveTo(50, height - 150);
+    page.moveDown(40);
     page.drawText('Key', {
-      x: 50,
-      font: boldFont,
-      size: smallFontSize
+      x: startX,
+      font: settings.boldFont,
     });
 
-    // TODO - get stitch number for each, don't include ones with 0.
-    // TODO - two columns?
     page.moveDown(20);
-    page.setFont(font);
+    page.setFont(settings.font);
     page.setFontSize(smallFontSize);
 
     for (let i = 0; i < project.palette.length; i++) {
@@ -87,7 +86,6 @@ export class ExportPdfService {
       let currentY = page.getY();
 
       // Draw box
-      let colour = this.hexToRgb(paletteEntry.floss.colour);
       page.drawRectangle({
         x: 50,
         y: currentY - 3,
@@ -95,11 +93,10 @@ export class ExportPdfService {
         height: 12,
         borderWidth: 1,
         borderColor: rgb(0, 0, 0),
-        //color: colour ? rgb( colour.r, colour.g, colour.b) : rgb(0, 0, 0),
         color: rgb(1, 1, 1),
       })
 
-      // Draw symbol..
+      // Draw symbol
       let icons = Icons;
       page.drawSvgPath(
         icons[paletteEntry.iconIndex].path,
@@ -121,6 +118,7 @@ export class ExportPdfService {
         x: 90, 
       });
 
+      // TODO - get stitch number for each, don't include ones with 0.
       // Stitches
       // page.drawText(`X stitches`, {
       //   x: 250, 
@@ -133,25 +131,15 @@ export class ExportPdfService {
     // TODO
   }
 
-  private hexToRgb(hex: string) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16) / 256,
-      g: parseInt(result[2], 16) / 256,
-      b: parseInt(result[3], 16) / 256
-    } : null;
-  }
-
-  private drawPattern(project: ProjectModel, pdfDoc: PDFDocument, font: any) {
-    // TODO - split across pages...
+  private drawPattern(project: ProjectModel, pdfDoc: PDFDocument, settings: ExportSettings) {
     let page = pdfDoc.addPage();
-    const { width, height } = page.getSize();
+    const { height } = page.getSize();
 
     let startX = 50;
     let startY = height - 50;
     let squareSize = 10;
 
-    // palette colour map
+    // Palette colour map
     let colourMap = new Map<number, RGB>();
     project.palette.forEach((p, i) => {
       let colour = this.hexToRgb(p.floss.colour);
@@ -159,14 +147,23 @@ export class ExportPdfService {
       colourMap.set(i, rgbColour);
     });
 
-    // palette icon map
+    // Palette icon map
     let icons = Icons;
     let iconMap = new Map<number, string>();
     project.palette.forEach((p, i) => {
       let iconPath = icons[p.iconIndex].path;
       iconMap.set(i, iconPath);
-    })
+    });
 
+    // Palette backstitch line map
+    let lines = Lines;
+    let lineMap = new Map<number, number>();
+    project.palette.forEach((p, i) => {
+      let thickness = lines[p.lineIndex].thickness;
+      lineMap.set(i, thickness);
+    });
+
+    // Cross stitch drawing
     let layer = project.layers[0];
     if (layer instanceof BasicLayer) {
       for (let rowIdx = 0; rowIdx < layer.crossstitches[0].length; rowIdx++) {
@@ -174,7 +171,7 @@ export class ExportPdfService {
           let val = layer.crossstitches[colIdx][rowIdx];
 
           if (typeof(val) == 'number' && val != -1) {
-            let rgbColour = colourMap.get(val) ?? rgb(0, 0, 0);
+            //let rgbColour = colourMap.get(val) ?? rgb(0, 0, 0);
             // page.drawRectangle({
             //   x: startX + (rowIdx * squareSize ),
             //   y: startY - ((colIdx + 1) * squareSize), // x, y positions...?
@@ -183,7 +180,7 @@ export class ExportPdfService {
             //   color: rgbColour
             // })
 
-            // Draw symbol..
+            // Draw symbol
             let iconPath = iconMap.get(val) ?? icons[0].path;
             page.drawSvgPath(
               iconPath,
@@ -200,7 +197,7 @@ export class ExportPdfService {
       }
     }
 
-    // grid
+    // Grid
     let gridWidth = project.canvasSettings.columns * squareSize;
     let gridHeight = project.canvasSettings.rows * squareSize;
 
@@ -234,15 +231,7 @@ export class ExportPdfService {
       })
     }
 
-    // backstitch
-
-    let lines = Lines;
-    let lineMap = new Map<number, number>();
-    project.palette.forEach((p, i) => {
-      let thickness = lines[p.lineIndex].thickness;
-      lineMap.set(i, thickness);
-    });
-
+    // Backstitch
     if (layer instanceof BasicLayer) {
       for (let bIdx = 0; bIdx < layer.backstitches.length; bIdx++) {
         let backstitch = layer.backstitches[bIdx];
@@ -262,14 +251,14 @@ export class ExportPdfService {
       }
     }
 
-    // numbers
-    let numberSize = 10;
+    // Numbers
+    page.setFontSize(10);
+    page.setFont(settings.font);
+
     for (let x = 10; x < project.canvasSettings.columns + 1; x += 10) {
       page.drawText(x.toString(), {
         x: startX + x * squareSize - 5,
         y: startY + 5,
-        font: font,
-        size: numberSize
       });
     }
 
@@ -277,8 +266,6 @@ export class ExportPdfService {
       page.drawText(y.toString(), {
         x: startX - 5,
         y: startY - y * squareSize - 5,
-        font: font,
-        size: numberSize,
         rotate: {
           angle: 90,
           type: RotationTypes.Degrees
@@ -286,7 +273,7 @@ export class ExportPdfService {
       });
     }
 
-    // center arrows
+    // Center arrows
     page.drawSvgPath('M 0 0 L 10 0 L 5 20 Z', {
       x: startX + gridWidth / 2 - 5,
       y: startY + 20,
@@ -302,6 +289,21 @@ export class ExportPdfService {
     })
 
     // TODO - smaller key
+  }
+
+
+  /**
+   * Convert hex string to rgb (0 - 1)
+   * @param hex Hex string #rrggbb
+   * @returns r, g, b values
+   */
+  private hexToRgb(hex: string) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16) / 256,
+      g: parseInt(result[2], 16) / 256,
+      b: parseInt(result[3], 16) / 256
+    } : null;
   }
 
 }
