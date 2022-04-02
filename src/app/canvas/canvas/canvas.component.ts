@@ -261,8 +261,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     let squareValue = this.getSquare_Round(mouseX, mouseY);
     if (squareValue) {
-      let startX = squareValue.x * SQUARE_SIZE;
-      let startY = squareValue.y * SQUARE_SIZE;
+      let startX = squareValue.x;
+      let startY = squareValue.y;
       let index =  this.project.currentPaletteColourIndex;
 
       this.currentLine = {
@@ -286,8 +286,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     let squareValue = this.getSquare_Round(mouseX, mouseY);
     if (squareValue) {
-      let endX = squareValue.x * SQUARE_SIZE;
-      let endY = squareValue.y * SQUARE_SIZE;
+      let endX = squareValue.x;
+      let endY = squareValue.y;
 
 
       this.currentLine.endX = endX;
@@ -305,8 +305,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     let squareValue = this.getCanvasPoint(mouseX, mouseY);
     if (squareValue) {
-      let x = squareValue.x * SQUARE_SIZE;
-      let y = squareValue.y * SQUARE_SIZE;
+      let x = squareValue.x;
+      let y = squareValue.y;
 
       this.store.dispatch(new Project.RemoveLine(x, y))
     }

@@ -3,6 +3,7 @@ import { ProjectModel } from '../state/project.model';
 import { PDFDocument, StandardFonts, rgb, PDFPage, grayscale, RGB, RotationTypes } from 'pdf-lib'
 import { BasicLayer } from '../state/basic-layer.model';
 import { Icons } from 'src/app/shared/icons.constants';
+import { Lines } from 'src/app/shared/lines.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -168,7 +169,6 @@ export class ExportPdfService {
 
     let layer = project.layers[0];
     if (layer instanceof BasicLayer) {
-      
       for (let rowIdx = 0; rowIdx < layer.crossstitches[0].length; rowIdx++) {
         for (let colIdx = 0; colIdx < layer.crossstitches.length; colIdx++) {
           let val = layer.crossstitches[colIdx][rowIdx];
@@ -198,9 +198,6 @@ export class ExportPdfService {
           // TODO partial stitches
         }
       }
-
-      // TODO backstitch
-
     }
 
     // grid
@@ -235,6 +232,34 @@ export class ExportPdfService {
         thickness: 1,
         opacity: y % 10 == 0 ? 1 : 0.2
       })
+    }
+
+    // backstitch
+
+    let lines = Lines;
+    let lineMap = new Map<number, number>();
+    project.palette.forEach((p, i) => {
+      let thickness = lines[p.lineIndex].thickness;
+      lineMap.set(i, thickness);
+    });
+
+    if (layer instanceof BasicLayer) {
+      for (let bIdx = 0; bIdx < layer.backstitches.length; bIdx++) {
+        let backstitch = layer.backstitches[bIdx];
+  
+        page.drawLine({
+          start: {
+            x: startX + backstitch.startX * squareSize,
+            y: startY - backstitch.startY * squareSize
+          },
+          end: {
+            x: startX + backstitch.endX * squareSize,
+            y: startY - backstitch.endY * squareSize
+          },
+          thickness: lineMap.get(backstitch.paletteIdx) ?? 1,
+          color: colourMap.get(backstitch.paletteIdx) ?? rgb(0, 0, 0)
+        });
+      }
     }
 
     // numbers

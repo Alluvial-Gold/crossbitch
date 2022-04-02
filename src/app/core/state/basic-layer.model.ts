@@ -147,8 +147,8 @@ export class BasicLayer implements ILayer {
       
       // is this the most efficient way to do this? group by colour maybe?
       ctx.beginPath();
-      ctx.moveTo(backstitch.startX, backstitch.startY);
-      ctx.lineTo(backstitch.endX, backstitch.endY);
+      ctx.moveTo(backstitch.startX * SQUARE_SIZE, backstitch.startY * SQUARE_SIZE);
+      ctx.lineTo(backstitch.endX * SQUARE_SIZE, backstitch.endY * SQUARE_SIZE);
       ctx.stroke();
     }
   }
