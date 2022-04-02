@@ -5,12 +5,12 @@ import { Observable, Subscription } from 'rxjs';
 import { PaletteComponent } from 'src/app/sidebar/components/palette/palette.component';
 import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
-import { ExportPdfService } from '../../services/export-pdf.service';
-import { BasicLayer } from '../../state/basic-layer.model';
-import { Project } from '../../state/project.actions';
-import { ProjectModel } from '../../state/project.model';
-import { ProjectState } from '../../state/project.state';
-import { Settings } from '../../state/settings.actions';
+import { ExportPdfService } from '../../../core/services/export-pdf.service';
+import { BasicLayer } from '../../../core/state/basic-layer.model';
+import { Project } from '../../../core/state/project.actions';
+import { ProjectModel } from '../../../core/state/project.model';
+import { ProjectState } from '../../../core/state/project.state';
+import { Settings } from '../../../core/state/settings.actions';
 import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
 
 @Component({

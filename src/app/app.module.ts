@@ -12,6 +12,7 @@ import { SidebarModule } from './sidebar/sidebar.module';
 import { CanvasModule } from './canvas/canvas.module';
 import { NgxsModule } from '@ngxs/store';
 import { FormsModule } from '@angular/forms';
+import { ToolbarModule } from './toolbar/toolbar.module';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { FormsModule } from '@angular/forms';
     ToolboxModule,
     SidebarModule,
     CanvasModule,
+    ToolbarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

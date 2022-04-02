@@ -5,8 +5,6 @@ import { MaterialModule } from '../material.module';
 import { NgxsModule } from '@ngxs/store';
 import { ProjectState } from '../core/state/project.state';
 
-
-
 @NgModule({
   declarations: [
     CanvasComponent
