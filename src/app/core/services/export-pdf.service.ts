@@ -111,7 +111,7 @@ export class ExportPdfService {
       );
 
       // Strands
-      page.drawText(`[${paletteEntry.strands}]`, {
+      page.drawText(`[${paletteEntry.crossStitchStrands}]`, {
         x: 70,
       });
 

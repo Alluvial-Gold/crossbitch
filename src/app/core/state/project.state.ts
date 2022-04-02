@@ -71,7 +71,9 @@ export class ProjectState {
           colour: floss ? floss.hex : '#000000'
         },
         iconIndex: i,
-        strands: 2
+        crossStitchStrands: 2,
+        lineIndex: 0,
+        backstitchStrands: 1,
       }
     });
 

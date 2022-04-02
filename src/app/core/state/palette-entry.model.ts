@@ -6,10 +6,10 @@ export interface PaletteEntry {
 
   // Cross stitch options
   iconIndex: number;
-  strands: number;
+  crossStitchStrands: number;
 
-  // TODO: back stitch options
-  // strands
-  // line type
+  // Backstitch options
+  lineIndex: number;
+  backstitchStrands: number;
 
 }
