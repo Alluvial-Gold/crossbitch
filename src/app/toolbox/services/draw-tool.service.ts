@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { FabricPoint } from 'src/app/canvas/canvas/canvas.component';
 import { BackstitchLine, BasicLayer } from 'src/app/core/state/basic-layer.model';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
-import { IToolService } from '../interfaces/i-tool.interface';
+import { FabricPoint } from 'src/app/shared/interfaces/fabric-point.interface';
+import { IToolService } from '../interfaces/itool.service.interface';
 
 export enum DrawServiceMode {
   CrossStitch,
@@ -16,7 +16,7 @@ export enum DrawServiceMode {
 @Injectable({
   providedIn: 'root'
 })
-export class DrawService implements IToolService, OnDestroy {
+export class DrawToolService implements IToolService, OnDestroy {
 
   sub: Subscription = new Subscription();
 

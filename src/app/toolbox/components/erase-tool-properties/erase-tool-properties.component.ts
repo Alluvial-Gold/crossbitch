@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EraseService, EraseServiceMode } from '../../services/erase.service';
+import { EraseToolService, EraseServiceMode } from '../../services/erase-tool.service';
 
 @Component({
   selector: 'app-erase-tool-properties',
@@ -21,15 +21,15 @@ export class EraseToolPropertiesComponent implements OnInit {
       icon: "show_chart"
     }
   ];
-  selectedMode: any;
+  selectedMode?: EraseServiceMode;
 
-  constructor(private eraseService: EraseService) { }
+  constructor(private eraseService: EraseToolService) { }
 
   ngOnInit(): void {
     this.selectedMode = this.eraseService.currentMode;
   }
 
-  setMode(newMode: any) {
+  setMode(newMode: EraseServiceMode) {
     this.selectedMode = newMode;
     this.eraseService.setCurrentMode(this.selectedMode);
   }

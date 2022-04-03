@@ -1,6 +1,8 @@
-import { FabricPoint } from "src/app/canvas/canvas/canvas.component";
+import { FabricPoint } from "src/app/shared/interfaces/fabric-point.interface";
 
-// Abstract class for tool services
+/**
+ * Interface for tool services
+ */
 export interface IToolService {
 
   onMouseDown(point: FabricPoint): void;

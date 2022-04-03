@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { FabricPoint } from 'src/app/canvas/canvas/canvas.component';
 import { BasicLayer } from 'src/app/core/state/basic-layer.model';
 import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
-import { IToolService } from '../interfaces/i-tool.interface';
+import { FabricPoint } from 'src/app/shared/interfaces/fabric-point.interface';
+import { IToolService } from '../interfaces/itool.service.interface';
 
 export enum EraseServiceMode {
   CrossStitch,
@@ -17,7 +17,7 @@ export enum EraseServiceMode {
 @Injectable({
   providedIn: 'root'
 })
-export class EraseService implements IToolService, OnDestroy {
+export class EraseToolService implements IToolService, OnDestroy {
 
   sub: Subscription = new Subscription();
 
@@ -99,7 +99,7 @@ export class EraseService implements IToolService, OnDestroy {
       point.y < 0 || point.y > this.project.fabricSettings.rows ) {
       return;
     }
-    // TODO fix tolerance
+
     this.store.dispatch(new Project.RemoveLine(point.x, point.y))
   }
 }

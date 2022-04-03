@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
-import { IToolService } from "src/app/toolbox/interfaces/i-tool.interface";
+import { IToolService } from "src/app/toolbox/interfaces/itool.service.interface";
 import { Settings } from "./settings.actions";
 import { SettingsModel } from "./settings.model";
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DrawService, DrawServiceMode } from '../../services/draw.service';
+import { DrawToolService, DrawServiceMode } from '../../services/draw-tool.service';
 
 @Component({
   selector: 'app-draw-tool-properties',
@@ -21,10 +21,10 @@ export class DrawToolPropertiesComponent implements OnInit {
       icon: "show_chart"
     }
   ];
-  selectedMode: any;
+  selectedMode?: DrawServiceMode;
 
   constructor(
-    private drawService: DrawService
+    private drawService: DrawToolService
   ) { 
   }
 
@@ -32,7 +32,7 @@ export class DrawToolPropertiesComponent implements OnInit {
     this.selectedMode = this.drawService.currentMode;
   }
 
-  setMode(newMode: any) {
+  setMode(newMode: DrawServiceMode) {
     this.selectedMode = newMode;
     this.drawService.setCurrentMode(this.selectedMode);
   }

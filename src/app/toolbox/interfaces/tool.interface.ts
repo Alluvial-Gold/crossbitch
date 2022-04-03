@@ -1,4 +1,4 @@
-import { IToolService } from "./i-tool.interface";
+import { IToolService } from "./itool.service.interface";
 
 export interface Tool {
   name: string;

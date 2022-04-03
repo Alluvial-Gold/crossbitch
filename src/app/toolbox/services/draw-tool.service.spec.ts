@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EraseService } from './erase.service';
+import { DrawToolService } from './draw-tool.service';
 
-describe('EraseService', () => {
-  let service: EraseService;
+describe('DrawToolService', () => {
+  let service: DrawToolService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EraseService);
+    service = TestBed.inject(DrawToolService);
   });
 
   it('should be created', () => {

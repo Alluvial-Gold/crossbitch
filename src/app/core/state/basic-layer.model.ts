@@ -54,11 +54,6 @@ export class BasicLayer implements ILayer {
   }
 
   removeBackstitch(clickedX: number, clickedY: number): number {
-    // Find all...
-
-    // todo: line length?
-    let tolerance = 1000;
-
     let backstitchesToRemove = this.backstitches.filter(b => {
       let lowX = Math.min(b.startX, b.endX);
       let highX = Math.max(b.startX, b.endX);
@@ -67,15 +62,13 @@ export class BasicLayer implements ILayer {
 
       if (lowX < clickedX && clickedX < highX &&
           lowY < clickedY && clickedY < highY) {
-          // (a, b), (m, n) (x, y) colinear if
-          // (n - b)(x - m) = (y - n)(m - a)
-          // (a: startX, b: startY), (m: endX, n: endY), (x: clickedX, y: clickedY)
-          let leftSide = (b.endY - b.startY) * (clickedX - b.endX);
-          let rightSide = (clickedY - b.endY) * (b.endX - b.startX);
-          let diff = Math.abs(leftSide - rightSide);
-
-          return diff < tolerance;
+          // Check distance...
+          let numerator = Math.abs((b.endX - b.startX) * (b.startY - clickedY) - (b.startX - clickedX) * (b.endY - b.startY));
+          let denominator = Math.sqrt(Math.pow(b.endX - b.startX, 2) + Math.pow(b.endY - b.startY, 2));
+          let distance = numerator / denominator;
+          return distance < 0.5;
       }
+
       return false;
     });
 

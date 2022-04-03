@@ -2,23 +2,16 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } fro
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SQUARE_SIZE } from 'src/app/core/constants';
-import { Project } from 'src/app/core/state/project.actions';
 import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { SettingsState } from 'src/app/core/state/settings.state';
-import { BackstitchLine, BasicLayer } from 'src/app/core/state/basic-layer.model';
 import { filter } from 'rxjs/operators';
-import { IToolService } from 'src/app/toolbox/interfaces/i-tool.interface';
+import { IToolService } from 'src/app/toolbox/interfaces/itool.service.interface';
+import { FabricPoint } from 'src/app/shared/interfaces/fabric-point.interface';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
 const ZOOM_INC = 0.1;
-
-// TODO move
-export interface FabricPoint {
-  x: number;
-  y: number;
-}
 
 @Component({
   selector: 'app-canvas',
@@ -211,23 +204,13 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(e: Event) {
+    if (!this.project) {
+      return;
+    }
+
     if (e instanceof MouseEvent && e.button == 0) {
       let fabricPoint = this.getFabricPoint(e.offsetX, e.offsetY);
       this.currentTool?.onMouseDown(fabricPoint);
-      // Right mouse button to do things
-      // if (this.currentMode == ToolboxModes.Crossstitch) {
-      //   if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
-      //     this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
-      //     this.isDrawDragging = true;
-      //   }
-      // } else if (this.currentMode == ToolboxModes.Backstitch) {
-      //   if (this.currentTool == Tools.Draw) {
-      //     this.startDrawingLine(e.offsetX, e.offsetY);
-      //     this.isDrawDragging = true;
-      //   } else if (this.currentTool == Tools.Erase) {
-      //     this.removeLine(e.offsetX, e.offsetY);
-      //   }
-      // }
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
       this.isPanDragging = true;
@@ -235,6 +218,10 @@ export class CanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(e: Event) {
+    if (!this.project) {
+      return;
+    }
+
     if (this.isPanDragging && e instanceof MouseEvent) {
       // Pan
       let moveX = e.movementX;
@@ -247,22 +234,15 @@ export class CanvasComponent implements OnInit, OnDestroy {
     } else if (e instanceof MouseEvent) {
       let fabricPoint = this.getFabricPoint(e.offsetX, e.offsetY);
       this.currentTool?.onMouseMove(fabricPoint);
-      // if (this.currentMode == ToolboxModes.Crossstitch) {
-      //   if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
-      //     this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
-      //   }
-      // } else if (this.currentMode == ToolboxModes.Backstitch) {
-      //   if (this.currentTool == Tools.Draw) {
-      //     this.updateLine(e.offsetX, e.offsetY);
-      //   }
-      // }
     }
   }
 
   onMouseUp(e: Event) {
+    if (!this.project) {
+      return;
+    }
+
     this.isPanDragging = false;
-    // this.isDrawDragging = false;
-    // this.currentLine = undefined;
     this.currentTool?.onMouseUp();
   }
 

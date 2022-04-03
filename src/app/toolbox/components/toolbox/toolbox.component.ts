@@ -3,10 +3,10 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { Settings } from 'src/app/core/state/settings.actions';
 import { SettingsState } from 'src/app/core/state/settings.state';
-import { IToolService } from '../../interfaces/i-tool.interface';
+import { IToolService } from '../../interfaces/itool.service.interface';
 import { Tool } from '../../interfaces/tool.interface';
-import { DrawService } from '../../services/draw.service';
-import { EraseService } from '../../services/erase.service';
+import { DrawToolService } from '../../services/draw-tool.service';
+import { EraseToolService } from '../../services/erase-tool.service';
 
 @Component({
   selector: 'app-toolbox',
@@ -40,8 +40,8 @@ export class ToolboxComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     // tool services
-    private drawService: DrawService,
-    private eraseService: EraseService,
+    private drawService: DrawToolService,
+    private eraseService: EraseToolService,
   ) { }
 
   ngOnInit(): void {
