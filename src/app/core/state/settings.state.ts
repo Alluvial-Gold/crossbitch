@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, StateToken } from "@ngxs/store";
-import { Tools } from "src/app/toolbox/interfaces/tool.interface";
-import { ToolboxModes } from "src/app/toolbox/interfaces/toolbox-mode.interface";
+import { IToolService } from "src/app/toolbox/interfaces/i-tool.interface";
 import { Settings } from "./settings.actions";
 import { SettingsModel } from "./settings.model";
 
@@ -23,23 +22,8 @@ export class SettingsState {
   }
 
   @Selector([SETTINGS_STATE_TOKEN])
-  static getCurrentToolboxMode(state: SettingsModel): ToolboxModes {
-    return state.currentToolboxMode;
-  }
-
-  @Selector([SETTINGS_STATE_TOKEN])
-  static getCurrentTool(state: SettingsModel): Tools {
+  static getCurrentTool(state: SettingsModel): IToolService {
     return state.currentTool;
-  }
-
-  @Action(Settings.SelectToolboxMode)
-  selectToolboxMode(
-    ctx: StateContext<SettingsModel>,
-    action: Settings.SelectToolboxMode
-  ) {
-    ctx.patchState({
-      currentToolboxMode: action.mode
-    })
   }
 
   @Action(Settings.SelectTool)
@@ -48,7 +32,7 @@ export class SettingsState {
     action: Settings.SelectTool
   ) {
     ctx.patchState({
-      currentTool: action.tool
+      currentTool: action.service
     })
   }
 }

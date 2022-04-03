@@ -1,28 +1,25 @@
-<mat-action-list style="width: 60px">
+<div class="toolbox">
 
-  <!-- toolbox mode -->
-  <mat-button-toggle-group vertical [(ngModel)]="chosenMode" >
-    <mat-button-toggle 
-      *ngFor="let mode of modes"
-      [value]="mode"
-      (click)="selectMode()"
-    >
-      <mat-icon>{{ mode.icon }}</mat-icon>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
+  <!-- Tool list -->
+  <div fxLayout="row wrap" class="tool-list-container">
+    <button mat-icon-button *ngFor="let tool of tools"
+      class="tool-button"
+      [ngClass]="{ 'selected-tool-button': currentTool == tool }"
+      [matTooltip]="tool.name"
+      (click)="selectTool(tool)">
+      <mat-icon>{{tool.icon}}</mat-icon>
+    </button>
+  </div>
 
-  <!-- spacer -->
-  <div style="height: 20px"></div>
+  <mat-divider></mat-divider>
 
-  <!-- tools -->
-  <mat-button-toggle-group vertical [(ngModel)]="chosenTool" >
-    <mat-button-toggle 
-      *ngFor="let tool of tools"
-      [value]="tool"
-      (click)="selectTool()"
-    >
-      <mat-icon>{{ tool.icon }}</mat-icon>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
+  <!-- Tool properties -->
+  <ng-container [ngSwitch]="currentTool">
+    <app-draw-tool-properties *ngSwitchCase="drawTool"></app-draw-tool-properties>
+    <app-erase-tool-properties *ngSwitchCase="eraseTool"></app-erase-tool-properties>
+    <div *ngSwitchDefault>
+      No tool selected
+    </div>
+  </ng-container>
 
-</mat-action-list>
+</div>

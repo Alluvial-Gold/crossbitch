@@ -7,15 +7,15 @@ import { ProjectModel } from 'src/app/core/state/project.model';
 import { ProjectState } from 'src/app/core/state/project.state';
 import { SettingsState } from 'src/app/core/state/settings.state';
 import { BackstitchLine, BasicLayer } from 'src/app/core/state/basic-layer.model';
-import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
-import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
 import { filter } from 'rxjs/operators';
+import { IToolService } from 'src/app/toolbox/interfaces/i-tool.interface';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
 const ZOOM_INC = 0.1;
 
-interface Point {
+// TODO move
+export interface FabricPoint {
   x: number;
   y: number;
 }
@@ -33,13 +33,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
   project$!: Observable<ProjectModel>;
   project: ProjectModel | undefined;
 
-  @Select(SettingsState.getCurrentToolboxMode)
-  currentMode$!: Observable<ToolboxModes>;
-  currentMode: ToolboxModes | undefined;
-
   @Select(SettingsState.getCurrentTool)
-  currentTool$!: Observable<Tools>;
-  currentTool: Tools | undefined;
+  currentTool$!: Observable<IToolService>;
+  currentTool?: IToolService;
 
   @ViewChild('mainCanvas', {static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -62,10 +58,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
   private transformX = 0;
   private transformY = 0;
   private isPanDragging = false;
-  private isDrawDragging = false;
-
-  private lineId = 0;
-  private currentLine: BackstitchLine | undefined;
 
   private gridPattern!: CanvasPattern;
 
@@ -108,12 +100,6 @@ export class CanvasComponent implements OnInit, OnDestroy {
           
       })
     )
-
-    this.sub.add(
-      this.currentMode$.subscribe((currentMode) => {
-        this.currentMode = currentMode;
-      })
-    );
 
     this.sub.add(
       this.currentTool$.subscribe((currentTool) => {
@@ -182,129 +168,13 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.ctx.fillRect(0, 0, width, height);
   }
 
-  private getSquare(mouseX: number, mouseY: number): Point | null {
-    let xInCanvas = mouseX - this.transformX;
-    let yInCanvas = mouseY - this.transformY;
-    let xValue = Math.floor(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
-    let yValue = Math.floor(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
-
-    if (this.project && 
-        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
-        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
-      return { x: xValue, y: yValue };
-    }
-    return null;
-  }
-
-  private getSquare_Round(mouseX: number, mouseY: number): Point | null {
-    let xInCanvas = mouseX - this.transformX;
-    let yInCanvas = mouseY - this.transformY;
-    let xValue = Math.round(xInCanvas / (SQUARE_SIZE * this.zoomFactor));
-    let yValue = Math.round(yInCanvas / (SQUARE_SIZE * this.zoomFactor));
-
-    if (this.project && 
-        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
-        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
-      return { x: xValue, y: yValue };
-    }
-    return null;
-  }
-
-  // like get square, but no rounding/flooring
-  private getCanvasPoint(mouseX: number, mouseY: number): Point | null {
+  private getFabricPoint(mouseX: number, mouseY: number): FabricPoint {
     let xInCanvas = mouseX - this.transformX;
     let yInCanvas = mouseY - this.transformY;
     let xValue = xInCanvas / (SQUARE_SIZE * this.zoomFactor);
     let yValue = yInCanvas / (SQUARE_SIZE * this.zoomFactor);
 
-    if (this.project && 
-        xValue >= 0 && xValue < this.project.fabricSettings.columns && 
-        yValue >= 0 && yValue < this.project.fabricSettings.rows) {
-      return { x: xValue, y: yValue };
-    }
-    return null;
-  }
-
-  private colourSquare(mouseX: number, mouseY: number, remove: boolean = false) {
-    if (!this.project) {
-      return;
-    }
-
-    let squareValue = this.getSquare(mouseX, mouseY);
-    if (!squareValue) {
-      return;
-    }
-
-    let currentLayer = this.project.layers[this.project.currentLayerIndex];
-    if (currentLayer instanceof BasicLayer) {
-      let currentValue = currentLayer.crossstitches[squareValue.y][squareValue.x];
-
-      // Check if current square is already filled with current colour
-      let index = remove ? -1 : this.project.currentPaletteColourIndex;
-      if (currentValue != index) {
-        this.store.dispatch(new Project.FillSquare(squareValue.y, squareValue.x, index));
-      }
-    }
-  }
-
-  private startDrawingLine(mouseX: number, mouseY: number) {
-    if (!this.project) {
-      return;
-    }
-
-    this.lineId++;
-
-    let squareValue = this.getSquare_Round(mouseX, mouseY);
-    if (squareValue) {
-      let startX = squareValue.x;
-      let startY = squareValue.y;
-      let index =  this.project.currentPaletteColourIndex;
-
-      this.currentLine = {
-        id: this.lineId.toString(),
-        startX: startX,
-        startY: startY,
-        endX: startX,
-        endY: startY,
-        paletteIdx: index,
-      };
-
-      this.store.dispatch(new Project.DrawLine(this.currentLine))
-    }
-  }
-
-  private updateLine(mouseX: number, mouseY: number) {
-    // assume that this is updating current line
-    if (!this.project || !this.currentLine) {
-      return;
-    }
-
-    let squareValue = this.getSquare_Round(mouseX, mouseY);
-    if (squareValue) {
-      let endX = squareValue.x;
-      let endY = squareValue.y;
-
-
-      this.currentLine.endX = endX;
-      this.currentLine.endY = endY;
-
-      this.store.dispatch(new Project.UpdateLine(this.currentLine))
-    }
-  }
-
-  private removeLine(mouseX: number, mouseY: number) {
-
-    if (!this.project) {
-      return;
-    }
-
-    let squareValue = this.getCanvasPoint(mouseX, mouseY);
-    if (squareValue) {
-      let x = squareValue.x;
-      let y = squareValue.y;
-
-      this.store.dispatch(new Project.RemoveLine(x, y))
-    }
+    return { x: xValue, y: yValue };
   }
 
   zoomToFit() {
@@ -342,20 +212,22 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   onMouseDown(e: Event) {
     if (e instanceof MouseEvent && e.button == 0) {
+      let fabricPoint = this.getFabricPoint(e.offsetX, e.offsetY);
+      this.currentTool?.onMouseDown(fabricPoint);
       // Right mouse button to do things
-      if (this.currentMode == ToolboxModes.Crossstitch) {
-        if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
-          this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
-          this.isDrawDragging = true;
-        }
-      } else if (this.currentMode == ToolboxModes.Backstitch) {
-        if (this.currentTool == Tools.Draw) {
-          this.startDrawingLine(e.offsetX, e.offsetY);
-          this.isDrawDragging = true;
-        } else if (this.currentTool == Tools.Erase) {
-          this.removeLine(e.offsetX, e.offsetY);
-        }
-      }
+      // if (this.currentMode == ToolboxModes.Crossstitch) {
+      //   if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
+      //     this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
+      //     this.isDrawDragging = true;
+      //   }
+      // } else if (this.currentMode == ToolboxModes.Backstitch) {
+      //   if (this.currentTool == Tools.Draw) {
+      //     this.startDrawingLine(e.offsetX, e.offsetY);
+      //     this.isDrawDragging = true;
+      //   } else if (this.currentTool == Tools.Erase) {
+      //     this.removeLine(e.offsetX, e.offsetY);
+      //   }
+      // }
     } else if (e instanceof MouseEvent && e.button == 1) {
       // Middle mouse button to drag
       this.isPanDragging = true;
@@ -372,23 +244,26 @@ export class CanvasComponent implements OnInit, OnDestroy {
       this.transformY += moveY;
 
       this.applyTransform();
-    } else if (this.isDrawDragging && e instanceof MouseEvent) {
-      if (this.currentMode == ToolboxModes.Crossstitch) {
-        if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
-          this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
-        }
-      } else if (this.currentMode == ToolboxModes.Backstitch) {
-        if (this.currentTool == Tools.Draw) {
-          this.updateLine(e.offsetX, e.offsetY);
-        }
-      }
+    } else if (e instanceof MouseEvent) {
+      let fabricPoint = this.getFabricPoint(e.offsetX, e.offsetY);
+      this.currentTool?.onMouseMove(fabricPoint);
+      // if (this.currentMode == ToolboxModes.Crossstitch) {
+      //   if (this.currentTool == Tools.Draw || this.currentTool == Tools.Erase) {
+      //     this.colourSquare(e.offsetX, e.offsetY, this.currentTool == Tools.Erase);
+      //   }
+      // } else if (this.currentMode == ToolboxModes.Backstitch) {
+      //   if (this.currentTool == Tools.Draw) {
+      //     this.updateLine(e.offsetX, e.offsetY);
+      //   }
+      // }
     }
   }
 
   onMouseUp(e: Event) {
     this.isPanDragging = false;
-    this.isDrawDragging = false;
-    this.currentLine = undefined;
+    // this.isDrawDragging = false;
+    // this.currentLine = undefined;
+    this.currentTool?.onMouseUp();
   }
 
   onSpacebar() {

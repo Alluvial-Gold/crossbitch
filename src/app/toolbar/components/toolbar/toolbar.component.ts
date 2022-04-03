@@ -3,14 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { DownloadService } from 'src/app/shared/services/download.service';
-import { Tools } from 'src/app/toolbox/interfaces/tool.interface';
-import { ToolboxModes } from 'src/app/toolbox/interfaces/toolbox-mode.interface';
 import { ExportPdfService } from '../../../core/services/export-pdf.service';
 import { BasicLayer } from '../../../core/state/basic-layer.model';
 import { Project } from '../../../core/state/project.actions';
 import { ProjectModel } from '../../../core/state/project.model';
 import { ProjectState } from '../../../core/state/project.state';
-import { Settings } from '../../../core/state/settings.actions';
 import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
 
 @Component({
@@ -53,8 +50,6 @@ export class ToolbarComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.store.dispatch(new Project.CreateProject(result.name, result.fabricColour, result.width, result.height));
-        this.store.dispatch(new Settings.SelectToolboxMode(ToolboxModes.Crossstitch));
-        this.store.dispatch(new Settings.SelectTool(Tools.Draw));
       }
     })
   }
