@@ -62,7 +62,8 @@ export class LayersComponent implements OnInit {
 
   // Nice type
   private getType(layer: ILayer): string {
-    if (layer instanceof BasicLayer) {
+    // TODO
+    if ((layer as BasicLayer).crossstitches != undefined) {
       return "Basic";
     }
     return "Layer";

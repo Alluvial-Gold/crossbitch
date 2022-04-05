@@ -8,6 +8,8 @@ import { SettingsState } from 'src/app/core/state/settings.state';
 import { filter } from 'rxjs/operators';
 import { IToolService } from 'src/app/toolbox/interfaces/itool.service.interface';
 import { FabricPoint } from 'src/app/shared/interfaces/fabric-point.interface';
+import { BasicLayerService } from 'src/app/core/services/basic-layer.service';
+import { BasicLayer } from 'src/app/core/state/basic-layer.model';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
@@ -56,6 +58,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store,
+    private basicLayerService: BasicLayerService
   ) {}
 
   ngOnInit(): void {
@@ -144,7 +147,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     // Cross stitch layers
     for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
-      this.project.layers[layerIdx].drawCrossstitchLayer(this.ctx, this.project.palette);
+      let layer = this.project.layers[layerIdx] as BasicLayer;
+      this.basicLayerService.drawCrossstitchLayer(layer, this.ctx, this.project.palette);
     }
 
     // Grid lines
@@ -152,7 +156,8 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     // Backstitch layers
     for (let layerIdx = 0; layerIdx < this.project.layers.length; layerIdx++) {
-      this.project.layers[layerIdx].drawBackstitchLayer(this.ctx, this.project.palette);
+      let layer = this.project.layers[layerIdx] as BasicLayer;
+      this.basicLayerService.drawBackstitchLayer(layer, this.ctx, this.project.palette);
     }
   }
 

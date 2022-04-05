@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
+import { BasicLayerService } from 'src/app/core/services/basic-layer.service';
 import { DownloadService } from 'src/app/shared/services/download.service';
 import { ExportPdfService } from '../../../core/services/export-pdf.service';
 import { BasicLayer } from '../../../core/state/basic-layer.model';
@@ -31,6 +32,7 @@ export class ToolbarComponent implements OnInit {
     public dialog: MatDialog,
     private exportPdfService: ExportPdfService,
     private downloadService: DownloadService,
+    private basicLayerService: BasicLayerService,
   ) { }
 
   ngOnInit(): void {
@@ -85,7 +87,7 @@ export class ToolbarComponent implements OnInit {
       // TODO: do this differently at some point...
       projectToImport.layers = projectToImport.layers.map((l) => {
         let bl = l as BasicLayer;
-        let layer = new BasicLayer(bl.name, bl.crossstitches.length, bl.crossstitches[0].length);
+        let layer = this.basicLayerService.createEmptyLayer(bl.name, bl.crossstitches.length, bl.crossstitches[0].length);
         layer.crossstitches = bl.crossstitches;
         layer.backstitches = bl.backstitches;
 

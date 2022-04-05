@@ -7,7 +7,7 @@ import { BasicLayer } from "./basic-layer.model";
 import { Project } from "./project.actions";
 import { ProjectModel } from "./project.model";
 import { DMCFlossList } from "src/assets/DMCFlossList";
-import { ICONS } from "src/app/shared/constants/icons.constants";
+import { BasicLayerService } from "../services/basic-layer.service";
 
 const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 
@@ -17,7 +17,9 @@ const PROJECT_STATE_TOKEN = new StateToken<ProjectModel>('project');
 @Injectable()
 export class ProjectState {
 
-  constructor() {
+  constructor(
+    private basicLayerService: BasicLayerService,
+  ) {
   }
 
   @Selector([PROJECT_STATE_TOKEN])
@@ -58,7 +60,7 @@ export class ProjectState {
     };
 
     // Start with single layer
-    let layer = new BasicLayer("Base", action.rows, action.columns);
+    let layer = this.basicLayerService.createEmptyLayer("Base", action.rows, action.columns);
     let layers = [layer];
 
     // Sample palette
@@ -160,8 +162,8 @@ export class ProjectState {
 
     let layers = state.layers;
     layers.forEach(layer => {
-      if (layer instanceof BasicLayer) {
-        layer.updatePalette(paletteMap);
+      if ((layer as BasicLayer).crossstitches != undefined) {
+        this.basicLayerService.updatePalette(layer as BasicLayer, paletteMap);
       }
     })
 
@@ -197,8 +199,8 @@ export class ProjectState {
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
 
-    if (currentLayer instanceof BasicLayer) {
-      currentLayer.setFullStitch(action.index, action.row, action.column);
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      this.basicLayerService.setFullStitch(currentLayer as BasicLayer, action.index, action.row, action.column);
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;
@@ -218,8 +220,8 @@ export class ProjectState {
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
     
-    if (currentLayer instanceof BasicLayer) {
-      currentLayer.addBackStitch(action.line);
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      this.basicLayerService.addBackStitch(currentLayer as BasicLayer, action.line);
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;
@@ -239,8 +241,8 @@ export class ProjectState {
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
     
-    if (currentLayer instanceof BasicLayer) {
-      currentLayer.updateBackStitch(action.line);
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      this.basicLayerService.updateBackStitch(currentLayer as BasicLayer, action.line);
 
       // TODO: figure out a nicer way to do this
       let newLayers = state.layers;
@@ -260,8 +262,8 @@ export class ProjectState {
     let state = ctx.getState();
     let currentLayer = state.layers[state.currentLayerIndex];
     
-    if (currentLayer instanceof BasicLayer) {
-      let numRemoved = currentLayer.removeBackstitch(action.clickedX, action.clickedY);
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      let numRemoved = this.basicLayerService.removeBackstitch(currentLayer as BasicLayer, action.clickedX, action.clickedY);
 
       if (numRemoved > 0) {
         // TODO: figure out a nicer way to do this

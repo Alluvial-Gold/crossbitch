@@ -85,8 +85,8 @@ export class DrawToolService implements IToolService, OnDestroy {
     }
 
     let currentLayer = this.project.layers[this.project.currentLayerIndex];
-    if (currentLayer instanceof BasicLayer) {
-      let currentValue = currentLayer.crossstitches[squareY][squareX];
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      let currentValue = (currentLayer as BasicLayer).crossstitches[squareY][squareX];
 
       // Check if current square is already filled with current colour
       let index = this.project.currentPaletteColourIndex;

@@ -77,8 +77,10 @@ export class EraseToolService implements IToolService, OnDestroy {
     }
 
     let currentLayer = this.project.layers[this.project.currentLayerIndex];
-    if (currentLayer instanceof BasicLayer) {
-      let currentValue = currentLayer.crossstitches[squareY][squareX];
+
+    
+    if ((currentLayer as BasicLayer).crossstitches != undefined) {
+      let currentValue = (currentLayer as BasicLayer).crossstitches[squareY][squareX];
 
       // Check if current square is already empty
       let index = -1;

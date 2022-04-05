@@ -164,8 +164,8 @@ export class ExportPdfService {
     });
 
     // Cross stitch drawing
-    let layer = project.layers[0];
-    if (layer instanceof BasicLayer) {
+    let layer = (project.layers[0] as BasicLayer);
+    if (layer.crossstitches != undefined) {
       for (let rowIdx = 0; rowIdx < layer.crossstitches[0].length; rowIdx++) {
         for (let colIdx = 0; colIdx < layer.crossstitches.length; colIdx++) {
           let val = layer.crossstitches[colIdx][rowIdx];
@@ -232,7 +232,7 @@ export class ExportPdfService {
     }
 
     // Backstitch
-    if (layer instanceof BasicLayer) {
+    if (layer.crossstitches != undefined) {
       for (let bIdx = 0; bIdx < layer.backstitches.length; bIdx++) {
         let backstitch = layer.backstitches[bIdx];
   
