@@ -51,7 +51,7 @@ export class ToolbarComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(new Project.CreateProject(result.name, result.fabricColour, result.width, result.height));
+        this.store.dispatch(new Project.CreateProject(result.name, result.fabricColour, result.height, result.width));
       }
     })
   }
